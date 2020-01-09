@@ -13,6 +13,7 @@ import io.turntabl.employementprofilingsystem.Utilities.Parsor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -56,21 +57,46 @@ class EmployeeController implements EmployeeDAO {
                 String employee_dev_level = (String) requestData.get("employee_dev_level");
                 String employee_gender = (String) requestData.get("employee_gender");
 
-                Integer resp = jdbcTemplate.update(
-                        "insert into employee(employee_firstname,employee_lastname,employee_phonenumber,employee_email,employee_address,employee_dev_level,employee_hire_date,employee_onleave,employee_gender) values(?,?,?,?,?,?,?,?,?)",
-                        new Object[]{
-                                requestData.get("employee_firstname"),
-                                requestData.get("employee_lastname"),
-                                requestData.get("employee_phonenumber"),
-                                requestData.get("employee_email"),
-                                requestData.get("employee_address"),
-                                employee_dev_level.toUpperCase(),
-                                employee_hire_date,
-                                employee_onleave,
-                                employee_gender.toUpperCase()
-                        }
-                );
-                if (resp > 0){
+//                Integer resp = jdbcTemplate.update(
+//                        "insert into employee(employee_firstname,employee_lastname,employee_phonenumber,employee_email,employee_address,employee_dev_level,employee_hire_date,employee_onleave,employee_gender) values(?,?,?,?,?,?,?,?,?)",
+//                        new Object[]{
+//                                requestData.get("employee_firstname"),
+//                                requestData.get("employee_lastname"),
+//                                requestData.get("employee_phonenumber"),
+//                                requestData.get("employee_email"),
+//                                requestData.get("employee_address"),
+//                                employee_dev_level.toUpperCase(),
+//                                employee_hire_date,
+//                                employee_onleave,
+//                                employee_gender.toUpperCase()
+//                        }
+//                );
+                SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
+
+                Map<String, Object> parameters = new HashMap<String, Object>();
+                parameters.put("employee_firstname",requestData.get("employee_firstname"));
+                parameters.put("employee_lastname",requestData.get("employee_lastname"));
+                parameters.put("employee_phonenumber",requestData.get("employee_phonenumber"));
+                parameters.put("employee_email",requestData.get("employee_email"));
+                parameters.put("employee_address",requestData.get("employee_address"));
+                parameters.put("employee_dev_level",employee_dev_level.toUpperCase());
+                parameters.put("employee_hire_date",employee_hire_date);
+                parameters.put("employee_onleave",employee_onleave);
+                parameters.put("employee_gender",employee_gender.toUpperCase());
+                Number key = insertActor.executeAndReturnKey(parameters);
+                if (key != null){
+                    Long employee_key = key.longValue();
+                    List<Integer> employee_tech_stack = (List<Integer>)requestData.get("employee_tech_stack");
+                    for(Integer tech: employee_tech_stack){
+                        jdbcTemplate.update(
+                                "insert into employeetech(tech_id,employee_id) values(?,?)",
+                                new Object[]{
+                                        tech,
+                                        employee_key
+                                }
+                        );
+                    }
+
                     response.put("code","00");
                     response.put("msg","New employee added successfully");
                 }else {
