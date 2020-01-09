@@ -7,6 +7,7 @@ import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 import io.turntabl.employementprofilingsystem.Transfers.Employee;
 import io.turntabl.employementprofilingsystem.Transfers.Project;
 import io.turntabl.employementprofilingsystem.Transfers.SingleProfileTO;
+import io.turntabl.employementprofilingsystem.Transfers.Tech;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
 import io.turntabl.employementprofilingsystem.Utilities.Parsor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,13 @@ class EmployeeController implements EmployeeDAO {
                         new Object[]{employee.getEmployee_id()},
                         BeanPropertyRowMapper.newInstance(Project.class)
                 );
-                result.add(this.SingleProfileTOrowMappper(employee,projectTOS));
+                List<Tech>techStack =  jdbcTemplate.query(
+
+                        "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
+                        new Object[]{employee.getEmployee_id()},
+                        BeanPropertyRowMapper.newInstance(Tech.class)
+                );
+                result.add(this.SingleProfileTOrowMappper(employee,projectTOS, techStack));
             }
 
             response.put("code","00");
@@ -121,10 +128,11 @@ class EmployeeController implements EmployeeDAO {
         return response;
     }
 
-    private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<Project> projectTOS ) throws SQLException {
+    private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<Project> projectTOS, List<Tech> techStack ) throws SQLException {
         SingleProfileTO singleProfileTO = new SingleProfileTO();
         singleProfileTO.setEmployee(employee);
         singleProfileTO.setProjects(projectTOS);
+        singleProfileTO.setTech_stack(techStack);
         return singleProfileTO;
     }
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SingleProfileTO {
     private Employee employee;
-//    private List<TechTO> techToList;
+    private List<Tech> tech_stack;
     private List<Project> projects;
 
     public SingleProfileTO() {
@@ -24,5 +24,13 @@ public class SingleProfileTO {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<Tech> getTech_stack() {
+        return tech_stack;
+    }
+
+    public void setTech_stack(List<Tech> tech_stack) {
+        this.tech_stack = tech_stack;
     }
 }
