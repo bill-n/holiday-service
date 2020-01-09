@@ -57,20 +57,6 @@ class EmployeeController implements EmployeeDAO {
                 String employee_dev_level = (String) requestData.get("employee_dev_level");
                 String employee_gender = (String) requestData.get("employee_gender");
 
-//                Integer resp = jdbcTemplate.update(
-//                        "insert into employee(employee_firstname,employee_lastname,employee_phonenumber,employee_email,employee_address,employee_dev_level,employee_hire_date,employee_onleave,employee_gender) values(?,?,?,?,?,?,?,?,?)",
-//                        new Object[]{
-//                                requestData.get("employee_firstname"),
-//                                requestData.get("employee_lastname"),
-//                                requestData.get("employee_phonenumber"),
-//                                requestData.get("employee_email"),
-//                                requestData.get("employee_address"),
-//                                employee_dev_level.toUpperCase(),
-//                                employee_hire_date,
-//                                employee_onleave,
-//                                employee_gender.toUpperCase()
-//                        }
-//                );
                 SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
 
                 Map<String, Object> parameters = new HashMap<String, Object>();
