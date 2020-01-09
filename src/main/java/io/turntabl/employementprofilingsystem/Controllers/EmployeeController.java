@@ -43,6 +43,7 @@ class EmployeeController implements EmployeeDAO {
                     "employee_lastname",
                     "employee_phonenumber",
                     "employee_email",
+                    "employee_role",
                     "employee_address",
                     "employee_dev_level",
                     "employee_gender",
@@ -56,6 +57,7 @@ class EmployeeController implements EmployeeDAO {
                 Boolean employee_onleave = false;
                 String employee_dev_level = (String) requestData.get("employee_dev_level");
                 String employee_gender = (String) requestData.get("employee_gender");
+                String employee_role = (String) requestData.get("employee_role");
 
                 SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
 
@@ -65,6 +67,7 @@ class EmployeeController implements EmployeeDAO {
                 parameters.put("employee_phonenumber",requestData.get("employee_phonenumber"));
                 parameters.put("employee_email",requestData.get("employee_email"));
                 parameters.put("employee_address",requestData.get("employee_address"));
+                parameters.put("employee_role",employee_role.toUpperCase());
                 parameters.put("employee_dev_level",employee_dev_level.toUpperCase());
                 parameters.put("employee_hire_date",employee_hire_date);
                 parameters.put("employee_onleave",employee_onleave);
@@ -82,7 +85,6 @@ class EmployeeController implements EmployeeDAO {
                                 }
                         );
                     }
-
                     response.put("code","00");
                     response.put("msg","New employee added successfully");
                 }else {
@@ -115,7 +117,7 @@ class EmployeeController implements EmployeeDAO {
                     "select * from employee",
                     BeanPropertyRowMapper.newInstance(Employee.class)
             );
-            System.out.println("Getting List of Employee | " + employeeTOList);
+
             for (Employee employee: employeeTOList){
                 List<Project> projectTOS =  jdbcTemplate.query(
                         "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",

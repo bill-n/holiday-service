@@ -11,6 +11,7 @@ public class Employee {
     private String employee_address;
     private String employee_dev_level;
     private String employee_gender;
+    private String employee_role;
     private Boolean employee_onleave;
     private java.sql.Date employee_hire_date;
 
@@ -36,22 +37,6 @@ public class Employee {
     public String getEmployee_lastname() {
         return employee_lastname;
     }
-
-//    @Override
-//    public String toString() {
-//        return "{" +
-//                "employee_id=" + employee_id +
-//                ", employee_firstname='" + employee_firstname + '\'' +
-//                ", employee_lastname='" + employee_lastname + '\'' +
-//                ", employee_phonenumber='" + employee_phonenumber + '\'' +
-//                ", employee_email='" + employee_email + '\'' +
-//                ", employee_address='" + employee_address + '\'' +
-//                ", employee_dev_level='" + employee_dev_level + '\'' +
-//                ", employee_gender='" + employee_gender + '\'' +
-//                ", employee_onleave=" + employee_onleave +
-//                ", employee_hire_date=" + employee_hire_date +
-//                '}';
-//    }
 
     public void setEmployee_lastname(String employee_lastname) {
         this.employee_lastname = employee_lastname;
@@ -95,6 +80,14 @@ public class Employee {
 
     public void setEmployee_gender(String employee_gender) {
         this.employee_gender = employee_gender;
+    }
+
+    public String getEmployee_role() {
+        return employee_role;
+    }
+
+    public void setEmployee_role(String employee_role) {
+        this.employee_role = employee_role;
     }
 
     public Boolean getEmployee_onleave() {
