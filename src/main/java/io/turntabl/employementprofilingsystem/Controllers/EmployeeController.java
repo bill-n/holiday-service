@@ -1,30 +1,31 @@
-package io.turntabl.employementprofilingsystem.v1.Controllers;
+package io.turntabl.employementprofilingsystem.Controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.turntabl.employementprofilingsystem.v1.DAO.EmployeeDAO;
-import io.turntabl.employementprofilingsystem.v1.Utilities.Date;
-import io.turntabl.employementprofilingsystem.v1.Utilities.Parsor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 
-import javax.validation.constraints.NotEmpty;
+import io.turntabl.employementprofilingsystem.Transfers.Employee;
+import io.turntabl.employementprofilingsystem.Transfers.Project;
+import io.turntabl.employementprofilingsystem.Transfers.SingleProfileTO;
+import io.turntabl.employementprofilingsystem.Utilities.Date;
+import io.turntabl.employementprofilingsystem.Utilities.Parsor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 import java.util.*;
 
 @Api
 @RestController
-public class Employee implements EmployeeDAO {
+class EmployeeController implements EmployeeDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     Parsor parsor = new Parsor();
     Date date = new Date();
+
 
     @ApiOperation("Add New Employee")
     @CrossOrigin(origins = "*")
@@ -86,8 +87,46 @@ public class Employee implements EmployeeDAO {
         }
         return response;
     }
+    @ApiOperation("List of Employee Profile")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/employees")
+    @Override
+    public Map<String, Object> getAllEmployeeProfile(){
+        List<SingleProfileTO> result = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+        try{
+            List<Employee> employeeTOList =  jdbcTemplate.query(
+                    "select * from employee",
+                    BeanPropertyRowMapper.newInstance(Employee.class)
+            );
+            System.out.println("Getting List of Employee | " + employeeTOList);
+            for (Employee employee: employeeTOList){
+                List<Project> projectTOS =  jdbcTemplate.query(
+                        "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
+                        new Object[]{employee.getEmployee_id()},
+                        BeanPropertyRowMapper.newInstance(Project.class)
+                );
+                result.add(this.SingleProfileTOrowMappper(employee,projectTOS));
+            }
 
-    public List<>
+            response.put("code","00");
+            response.put("msg","Data retrieved successfully");
+            response.put("data",result);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+
+    private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<Project> projectTOS ) throws SQLException {
+        SingleProfileTO singleProfileTO = new SingleProfileTO();
+        singleProfileTO.setEmployee(employee);
+        singleProfileTO.setProjects(projectTOS);
+        return singleProfileTO;
+    }
 
 
 }

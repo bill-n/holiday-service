@@ -1,10 +1,13 @@
-package io.turntabl.employementprofilingsystem.v1.Utilities;
+package io.turntabl.employementprofilingsystem.Utilities;
+
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class Parsor {
 
     public Map<String, Object> validate_params(Map<String, Object> requestData, List<String> requiredParams){

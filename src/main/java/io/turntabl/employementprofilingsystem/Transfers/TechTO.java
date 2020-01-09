@@ -1,5 +1,8 @@
-package io.turntabl.employementprofilingsystem.v1.Transfers;
+package io.turntabl.employementprofilingsystem.Transfers;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class TechTO {
     private Integer tech_id;
     private String tech_name;

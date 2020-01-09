@@ -1,5 +1,8 @@
-package io.turntabl.employementprofilingsystem.v1.Utilities;
+package io.turntabl.employementprofilingsystem.Utilities;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Date {
     public java.sql.Date getCurrentDate (){
         long millis=System.currentTimeMillis();

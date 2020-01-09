@@ -1,9 +1,8 @@
-package io.turntabl.employementprofilingsystem.v1.Transfers;
+package io.turntabl.employementprofilingsystem.Transfers;
 
 import java.sql.Date;
-import java.util.List;
 
-public class ProfileTO {
+public class Employee {
     private Integer employee_id;
     private String employee_firstname;
     private String employee_lastname;
@@ -14,8 +13,9 @@ public class ProfileTO {
     private String employee_gender;
     private Boolean employee_onleave;
     private java.sql.Date employee_hire_date;
-    private List<TechTO> techToList;
-    private List<ProjectTO> projectTOList;
+
+    public Employee() {
+    }
 
     public Integer getEmployee_id() {
         return employee_id;
@@ -36,6 +36,22 @@ public class ProfileTO {
     public String getEmployee_lastname() {
         return employee_lastname;
     }
+
+//    @Override
+//    public String toString() {
+//        return "{" +
+//                "employee_id=" + employee_id +
+//                ", employee_firstname='" + employee_firstname + '\'' +
+//                ", employee_lastname='" + employee_lastname + '\'' +
+//                ", employee_phonenumber='" + employee_phonenumber + '\'' +
+//                ", employee_email='" + employee_email + '\'' +
+//                ", employee_address='" + employee_address + '\'' +
+//                ", employee_dev_level='" + employee_dev_level + '\'' +
+//                ", employee_gender='" + employee_gender + '\'' +
+//                ", employee_onleave=" + employee_onleave +
+//                ", employee_hire_date=" + employee_hire_date +
+//                '}';
+//    }
 
     public void setEmployee_lastname(String employee_lastname) {
         this.employee_lastname = employee_lastname;
@@ -95,21 +111,5 @@ public class ProfileTO {
 
     public void setEmployee_hire_date(Date employee_hire_date) {
         this.employee_hire_date = employee_hire_date;
-    }
-
-    public List<TechTO> getTechToList() {
-        return techToList;
-    }
-
-    public void setTechToList(List<TechTO> techToList) {
-        this.techToList = techToList;
-    }
-
-    public List<ProjectTO> getProjectTOList() {
-        return projectTOList;
-    }
-
-    public void setProjectTOList(List<ProjectTO> projectTOList) {
-        this.projectTOList = projectTOList;
     }
 }
