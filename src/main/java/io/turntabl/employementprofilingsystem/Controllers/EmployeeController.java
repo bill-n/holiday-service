@@ -43,7 +43,8 @@ class EmployeeController implements EmployeeDAO {
                     "employee_email",
                     "employee_address",
                     "employee_dev_level",
-                    "employee_gender"
+                    "employee_gender",
+                    "employee_tech_stack"
             );
 
             Map<String, Object> result = parsor.validate_params(requestData,requiredParams);
@@ -51,6 +52,8 @@ class EmployeeController implements EmployeeDAO {
 
                 java.sql.Date employee_hire_date = date.getCurrentDate();
                 Boolean employee_onleave = false;
+                String employee_dev_level = (String) requestData.get("employee_dev_level");
+                String employee_gender = (String) requestData.get("employee_gender");
 
                 Integer resp = jdbcTemplate.update(
                         "insert into employee(employee_firstname,employee_lastname,employee_phonenumber,employee_email,employee_address,employee_dev_level,employee_hire_date,employee_onleave,employee_gender) values(?,?,?,?,?,?,?,?,?)",
@@ -60,10 +63,10 @@ class EmployeeController implements EmployeeDAO {
                                 requestData.get("employee_phonenumber"),
                                 requestData.get("employee_email"),
                                 requestData.get("employee_address"),
-                                requestData.get("employee_dev_level"),
+                                employee_dev_level.toUpperCase(),
                                 employee_hire_date,
                                 employee_onleave,
-                                requestData.get("employee_gender")
+                                employee_gender.toUpperCase()
                         }
                 );
                 if (resp > 0){

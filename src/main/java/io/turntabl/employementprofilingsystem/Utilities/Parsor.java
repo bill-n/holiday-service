@@ -17,7 +17,7 @@ public class Parsor {
             List<String> missingParams = new ArrayList<>();
 
             for (String param: requiredParams){
-                if(!requestData.containsKey(param) || requestData.get(param).equals("")){
+                if(!requestData.containsKey(param) || requestData.get(param).equals("") || requestData.get(param).equals(new ArrayList<>())){
                     missingParams.add(param);
                 }
             }
