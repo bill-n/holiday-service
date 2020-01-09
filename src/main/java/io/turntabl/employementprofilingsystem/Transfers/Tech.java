@@ -3,11 +3,11 @@ package io.turntabl.employementprofilingsystem.Transfers;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TechTO {
+public class Tech {
     private Integer tech_id;
     private String tech_name;
 
-    public TechTO() {
+    public Tech() {
     }
 
     public Integer getTech_id() {
