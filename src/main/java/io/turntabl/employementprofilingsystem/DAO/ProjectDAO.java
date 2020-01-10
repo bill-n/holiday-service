@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-@Component
+
 public interface ProjectDAO {
     public Map<String, Object> addProject(@RequestBody AddProject requestData);
     public Map<String, Object> getAllProjects();
-    public Map<String, Object> getAllProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+    public Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+    public Map<String, Object> getProjectById(@PathVariable("id") Integer id);
 }

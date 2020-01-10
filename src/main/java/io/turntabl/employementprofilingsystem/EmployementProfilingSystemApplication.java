@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
+@ComponentScan(basePackages = "io.turntabl.*")
 @EnableSwagger2
 @EnableAutoConfiguration
 @SpringBootApplication

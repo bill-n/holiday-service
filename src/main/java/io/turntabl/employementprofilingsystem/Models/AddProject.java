@@ -8,19 +8,18 @@ public class AddProject {
     private String project_description;
     private String project_start_date;
     private String project_end_date;
+    private String project_status;
     private List<Integer> project_tech_stack;
 
     public AddProject() {
     }
-    @Override
-    public String toString() {
-        return "{" +
-                ", project_name='" + project_name + '\'' +
-                ", project_description='" + project_description + '\'' +
-                ", project_start_date='" + project_start_date + '\'' +
-                ", project_end_date='" + project_end_date + '\'' +
-                ", project_tech_stack=" + project_tech_stack +
-                '}';
+
+    public String getProject_status() {
+        return project_status;
+    }
+
+    public void setProject_status(String project_status) {
+        this.project_status = project_status;
     }
 
     public String getProject_name() {

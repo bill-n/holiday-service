@@ -8,6 +8,7 @@ CREATE TABLE employee (
 	employee_phoneNumber text not null,
 	employee_email text not null,
 	employee_address text not null,
+	employee_role text not null,
 	employee_dev_level text not null,
 	employee_hire_date DATE not null,
 	employee_onLeave BOOLEAN not null,

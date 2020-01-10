@@ -45,6 +45,7 @@ class EmployeeController implements EmployeeDAO {
         request.put("employee_address",requestData.getEmployee_address());
         request.put("employee_dev_level",requestData.getEmployee_dev_level());
         request.put("employee_gender",requestData.getEmployee_gender());
+        request.put("employee_status",requestData.getEmployee_status());
         request.put("employee_tech_stack",requestData.getEmployee_tech_stack());
 
         try{
@@ -58,6 +59,7 @@ class EmployeeController implements EmployeeDAO {
                     "employee_address",
                     "employee_dev_level",
                     "employee_gender",
+                    "employee_status",
                     "employee_tech_stack"
             );
 
@@ -69,6 +71,7 @@ class EmployeeController implements EmployeeDAO {
                 String employee_dev_level = requestData.getEmployee_dev_level();
                 String employee_gender = requestData.getEmployee_gender();
                 String employee_role = requestData.getEmployee_role();
+                String employee_status = requestData.getEmployee_status();
 
                 SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
 
@@ -79,6 +82,7 @@ class EmployeeController implements EmployeeDAO {
                 parameters.put("employee_email",requestData.getEmployee_email());
                 parameters.put("employee_address",requestData.getEmployee_address());
                 parameters.put("employee_role",employee_role.toUpperCase());
+                parameters.put("employee_status",employee_status.toUpperCase());
                 parameters.put("employee_dev_level",employee_dev_level.toUpperCase());
                 parameters.put("employee_hire_date",employee_hire_date);
                 parameters.put("employee_onleave",employee_onleave);
@@ -149,7 +153,6 @@ class EmployeeController implements EmployeeDAO {
                 );
                 result.add(this.SingleProfileTOrowMappper(employee,projectTOS, techStack));
             }
-
             response.put("code","00");
             response.put("msg","Data retrieved successfully");
             response.put("data",result);
@@ -179,26 +182,32 @@ class EmployeeController implements EmployeeDAO {
             Map<String, Object> valid = parsor.validate_params(request,requiredParams);
             if (valid.get("code").equals("00")){
 
-                Employee employee = jdbcTemplate.queryForObject(
+                List<Employee> employee = jdbcTemplate.query(
                         "select * from employee where employee_id = ?",
                         new Object[]{id},
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
 
-                List<Project> projectTOS =  jdbcTemplate.query(
+                List<Project> projectTOS = jdbcTemplate.query(
                         "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
                         new Object[]{id},
                         BeanPropertyRowMapper.newInstance(Project.class)
                 );
-                List<Tech>techStack =  jdbcTemplate.query(
+                List<Tech> techStack = jdbcTemplate.query(
 
                         "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
                         new Object[]{id},
                         BeanPropertyRowMapper.newInstance(Tech.class)
                 );
-                response.put("code","00");
-                response.put("msg","Data retrieved successfully");
-                response.put("data",this.SingleProfileTOrowMappper(employee,projectTOS, techStack));
+                if (!employee.isEmpty()){
+                    response.put("code","00");
+                    response.put("msg","Data retrieved successfully");
+                    response.put("data",this.SingleProfileTOrowMappper(employee.get(0),projectTOS, techStack));
+                }else {
+                    response.put("code","00");
+                    response.put("msg","No Data found");
+                    response.put("data",new HashMap<>());
+                }
             }else {
                 response.put("code",valid.get("code"));
                 response.put("msg",valid.get("msg"));

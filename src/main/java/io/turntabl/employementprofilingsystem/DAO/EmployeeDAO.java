@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Map;
 
-@Component
+
 public interface EmployeeDAO {
     public Map<String,Object> addEmployee( AddEmployee requestData);
     public Map<String, Object> getAllEmployeeProfile();

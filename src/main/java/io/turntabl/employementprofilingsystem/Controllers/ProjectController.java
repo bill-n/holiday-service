@@ -38,6 +38,7 @@ public class ProjectController implements ProjectDAO {
         request.put("project_description",requestData.getProject_description());
         request.put("project_start_date",requestData.getProject_start_date());
         request.put("project_end_date",requestData.getProject_end_date());
+        request.put("project_status",requestData.getProject_status());
         request.put("project_tech_stack",requestData.getProject_tech_stack());
 
         try{
@@ -47,6 +48,7 @@ public class ProjectController implements ProjectDAO {
                     "project_description",
                     "project_start_date",
                     "project_end_date",
+                    "project_status",
                     "project_tech_stack"
             );
 
@@ -55,6 +57,7 @@ public class ProjectController implements ProjectDAO {
 
                 String project_startDate =  requestData.getProject_start_date();
                 String project_endDate = requestData.getProject_end_date();
+                String project_status = requestData.getProject_status();
 
                 java.sql.Date project_start_date = date.getDateObject(project_startDate);
                 java.sql.Date project_end_date = date.getDateObject(project_endDate);
@@ -66,6 +69,7 @@ public class ProjectController implements ProjectDAO {
                 parameters.put("project_description",requestData.getProject_description());
                 parameters.put("project_start_date",project_start_date);
                 parameters.put("project_end_date",project_end_date);
+                parameters.put("project_status",project_status.toUpperCase());
 
                 Number key = insertActor.executeAndReturnKey(parameters);
                 Long project_key = key.longValue();
@@ -139,11 +143,48 @@ public class ProjectController implements ProjectDAO {
         return response;
     }
 
+    @ApiOperation("Get Project By Id")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{id}")
+    @Override
+    public Map<String, Object> getProjectById(@PathVariable("id") Integer id){
+        List<SingleProjectTO> result = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+        try{
+            List<Project> projectList =  jdbcTemplate.query(
+                    "select * from project where project_id = ?",
+                    new Object[]{id},
+                    BeanPropertyRowMapper.newInstance(Project.class)
+            );
+
+            List<Tech>techStack =  jdbcTemplate.query(
+                    "select * from tech inner join techproject on tech.tech_id = techproject.tech_id inner join project on techproject.project_id = project.project_id where project.project_id = ? ",
+                    new Object[]{id},
+                    BeanPropertyRowMapper.newInstance(Tech.class)
+            );
+            if (!projectList.isEmpty()){
+                response.put("code","00");
+                response.put("msg","Data retrieved successfully");
+                response.put("data",this.SingleProjectTOrowMappper(projectList.get(0), techStack));
+            }else {
+                response.put("code","00");
+                response.put("msg","No Data found");
+                response.put("data",new HashMap<>());
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+
     @ApiOperation("Assign Projects to Employee")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/project/{project_id}/assign/employee/{employee_id}")
     @Override
-    public Map<String, Object> getAllProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
+    public Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
 
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
@@ -157,10 +198,11 @@ public class ProjectController implements ProjectDAO {
             Map<String, Object> result = parsor.validate_params(request,requiredParams);
             if (result.get("code").equals("00")){
                 int resp = jdbcTemplate.update(
-                        "insert into assignedproject(employee_id,project_id) values(?,?)",
+                        "insert into assignedproject(employee_id,project_id,isworkingon) values(?,?,?)",
                         new Object[]{
                                 employee_id,
-                                project_id
+                                project_id,
+                                true
                         }
                 );
                 if(resp > 0){
@@ -181,6 +223,7 @@ public class ProjectController implements ProjectDAO {
         }
         return response;
     }
+
 
     private SingleProjectTO SingleProjectTOrowMappper(Project project, List<Tech> techStack ) throws SQLException {
         SingleProjectTO singleProjectTO = new SingleProjectTO();

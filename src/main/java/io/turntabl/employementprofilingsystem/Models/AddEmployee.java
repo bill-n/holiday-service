@@ -10,6 +10,7 @@ public class AddEmployee {
     private String employee_address;
     private String employee_dev_level;
     private String employee_gender;
+    private String employee_status;
     private String employee_role;
     private List<Integer> employee_tech_stack;
 
@@ -34,12 +35,22 @@ public class AddEmployee {
                 ", employee_address='" + employee_address + '\'' +
                 ", employee_dev_level='" + employee_dev_level + '\'' +
                 ", employee_gender='" + employee_gender + '\'' +
+                ", employee_status='" + employee_status + '\'' +
                 ", employee_role='" + employee_role + '\'' +
+                ", employee_tech_stack=" + employee_tech_stack +
                 '}';
     }
 
     public String getEmployee_firstname() {
         return employee_firstname;
+    }
+
+    public String getEmployee_status() {
+        return employee_status;
+    }
+
+    public void setEmployee_status(String employee_status) {
+        this.employee_status = employee_status;
     }
 
     public void setEmployee_firstname(String employee_firstname) {

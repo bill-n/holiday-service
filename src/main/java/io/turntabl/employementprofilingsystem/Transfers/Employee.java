@@ -12,10 +12,19 @@ public class Employee {
     private String employee_dev_level;
     private String employee_gender;
     private String employee_role;
+    private String employee_status;
     private Boolean employee_onleave;
     private java.sql.Date employee_hire_date;
 
     public Employee() {
+    }
+
+    public String getEmployee_status() {
+        return employee_status;
+    }
+
+    public void setEmployee_status(String employee_status) {
+        this.employee_status = employee_status;
     }
 
     public Integer getEmployee_id() {
