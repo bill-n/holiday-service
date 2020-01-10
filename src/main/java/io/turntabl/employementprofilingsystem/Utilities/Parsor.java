@@ -11,13 +11,14 @@ import java.util.Map;
 public class Parsor {
 
     public Map<String, Object> validate_params(Map<String, Object> requestData, List<String> requiredParams){
+
         Map<String, Object> response = new HashMap<>();
         try{
 
             List<String> missingParams = new ArrayList<>();
 
             for (String param: requiredParams){
-                if(!requestData.containsKey(param) || requestData.get(param).equals("") || requestData.get(param).equals(new ArrayList<>())){
+                if(requestData.get(param) == null || !requestData.containsKey(param) || requestData.get(param).equals("") || requestData.get(param).equals(new ArrayList<>())){
                     missingParams.add(param);
                 }
             }
@@ -39,4 +40,5 @@ public class Parsor {
 
         return response;
     }
+
 }

@@ -33,6 +33,7 @@ dependencies {
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.0'
 	runtimeOnly 'org.postgresql:postgresql'
 	compile  'com.google.code.gson:gson:2.8.5'
+	compile group: 'org.json', name: 'json', version: '20090211'
 }
 
 test {
