@@ -66,54 +66,59 @@ class EmployeeController implements EmployeeDAO {
             Map<String, Object> result = parsor.validate_params(request,requiredParams);
             if (result.get("code").equals("00")){
 
-                java.sql.Date employee_hire_date = date.getCurrentDate();
-                Boolean employee_onleave = false;
-                String employee_dev_level = requestData.getEmployee_dev_level();
-                String employee_gender = requestData.getEmployee_gender();
-                String employee_role = requestData.getEmployee_role();
-                String employee_status = requestData.getEmployee_status();
-
-                SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
-
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put("employee_firstname",requestData.getEmployee_firstname());
-                parameters.put("employee_lastname",requestData.getEmployee_lastname());
-                parameters.put("employee_phonenumber",requestData.getEmployee_phonenumber());
-                parameters.put("employee_email",requestData.getEmployee_email());
-                parameters.put("employee_address",requestData.getEmployee_address());
-                parameters.put("employee_role",employee_role.toUpperCase());
-                parameters.put("employee_status",employee_status.toUpperCase());
-                parameters.put("employee_dev_level",employee_dev_level.toUpperCase());
-                parameters.put("employee_hire_date",employee_hire_date);
-                parameters.put("employee_onleave",employee_onleave);
-                parameters.put("employee_gender",employee_gender.toUpperCase());
-
-                Number key = insertActor.executeAndReturnKey(parameters);
-                Long employee_key = key.longValue();
-                if (key != null){
-
-                    List<Integer> employee_tech_stack = requestData.getEmployee_tech_stack();
-                    for(Integer tech: employee_tech_stack){
-                        if (tech instanceof Integer){
-                            jdbcTemplate.update(
-                                    "insert into employeetech(tech_id,employee_id) values(?,?)",
-                                    new Object[]{
-                                            tech,
-                                            employee_key
-                                    }
-                            );
-                            response.put("code","00");
-                            response.put("msg","New employee added successfully");
-                        }else {
-                            this.deleteEmployeeRow(employee_key);
-                            response.put("code","01");
-                            response.put("msg","Invalid input type [project_tech_stack], try again later");
-                        }
-                    }
-                }else {
-                    this.deleteEmployeeRow(employee_key);
+                if (this.checkExistingEmployee(requestData.getEmployee_email(),requestData.getEmployee_phonenumber())){
                     response.put("code","01");
-                    response.put("msg","Failed to add new employee, try again later");
+                    response.put("msg","Employee already exist with the same email and/or phone number");
+                }else {
+                    java.sql.Date employee_hire_date = date.getCurrentDate();
+                    Boolean employee_onleave = false;
+                    String employee_dev_level = requestData.getEmployee_dev_level();
+                    String employee_gender = requestData.getEmployee_gender();
+                    String employee_role = requestData.getEmployee_role();
+                    String employee_status = requestData.getEmployee_status();
+
+                    SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
+
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+                    parameters.put("employee_firstname",requestData.getEmployee_firstname());
+                    parameters.put("employee_lastname",requestData.getEmployee_lastname());
+                    parameters.put("employee_phonenumber",requestData.getEmployee_phonenumber());
+                    parameters.put("employee_email",requestData.getEmployee_email());
+                    parameters.put("employee_address",requestData.getEmployee_address());
+                    parameters.put("employee_role",employee_role.toUpperCase());
+                    parameters.put("employee_status",employee_status.toUpperCase());
+                    parameters.put("employee_dev_level",employee_dev_level.toUpperCase());
+                    parameters.put("employee_hire_date",employee_hire_date);
+                    parameters.put("employee_onleave",employee_onleave);
+                    parameters.put("employee_gender",employee_gender.toUpperCase());
+
+                    Number key = insertActor.executeAndReturnKey(parameters);
+                    Long employee_key = key.longValue();
+                    if (key != null){
+
+                        List<Integer> employee_tech_stack = requestData.getEmployee_tech_stack();
+                        for(Integer tech: employee_tech_stack){
+                            if (tech instanceof Integer){
+                                jdbcTemplate.update(
+                                        "insert into employeetech(tech_id,employee_id) values(?,?)",
+                                        new Object[]{
+                                                tech,
+                                                employee_key
+                                        }
+                                );
+                                response.put("code","00");
+                                response.put("msg","New employee added successfully");
+                            }else {
+                                this.deleteEmployeeRow(employee_key);
+                                response.put("code","01");
+                                response.put("msg","Invalid input type [project_tech_stack], try again later");
+                            }
+                        }
+                    }else {
+                        this.deleteEmployeeRow(employee_key);
+                        response.put("code","01");
+                        response.put("msg","Failed to add new employee, try again later");
+                    }
                 }
             }else {
                 response.put("code",result.get("code"));
@@ -227,8 +232,27 @@ class EmployeeController implements EmployeeDAO {
         singleProfileTO.setTech_stack(techStack);
         return singleProfileTO;
     }
+    private Boolean checkExistingEmployee(String email, String phoneNumber){
+        Boolean response = null;
 
-    public void deleteEmployeeRow(Long id){
+        try{
+            List<Employee> employee = jdbcTemplate.query(
+                    "select * from employee where employee_email = ? or employee_phonenumber = ? ",
+                    new Object[]{email, phoneNumber},
+                    BeanPropertyRowMapper.newInstance(Employee.class)
+            );
+            if (employee.isEmpty()){
+                response = false;
+            }else {
+                response = true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    private void deleteEmployeeRow(Long id){
         String sql = "delete from employee where employee_id = ? ";
         jdbcTemplate.update(
                 sql,
