@@ -162,6 +162,55 @@ class EmployeeController implements EmployeeDAO {
         return response;
     }
 
+    @ApiOperation("Get Employee Profile By Id")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/employee/{id}")
+    @Override
+    public Map<String, Object> getEmployeeProfileById(@PathVariable("id") Integer id){
+        List<SingleProfileTO> result = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
+        request.put("id",id);
+
+        try{
+            List<String> requiredParams = Arrays.asList(
+                    "id"
+            );
+            Map<String, Object> valid = parsor.validate_params(request,requiredParams);
+            if (valid.get("code").equals("00")){
+
+                Employee employee = jdbcTemplate.queryForObject(
+                        "select * from employee where employee_id = ?",
+                        new Object[]{id},
+                        BeanPropertyRowMapper.newInstance(Employee.class)
+                );
+
+                List<Project> projectTOS =  jdbcTemplate.query(
+                        "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
+                        new Object[]{id},
+                        BeanPropertyRowMapper.newInstance(Project.class)
+                );
+                List<Tech>techStack =  jdbcTemplate.query(
+
+                        "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
+                        new Object[]{id},
+                        BeanPropertyRowMapper.newInstance(Tech.class)
+                );
+                response.put("code","00");
+                response.put("msg","Data retrieved successfully");
+                response.put("data",this.SingleProfileTOrowMappper(employee,projectTOS, techStack));
+            }else {
+                response.put("code",valid.get("code"));
+                response.put("msg",valid.get("msg"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+
     private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<Project> projectTOS, List<Tech> techStack ) throws SQLException {
         SingleProfileTO singleProfileTO = new SingleProfileTO();
         singleProfileTO.setEmployee(employee);
@@ -177,6 +226,4 @@ class EmployeeController implements EmployeeDAO {
                 new Object[]{id}
         );
     }
-
-
 }
