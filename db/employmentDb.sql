@@ -37,7 +37,8 @@ CREATE TABLE assignedproject (
 
 	assignedproject_id serial primary key,
 	employee_id INTEGER,
-	project_id INTEGER
+	project_id INTEGER,
+	isworkingon BOOLEAN not null
 );
 
 CREATE TABLE techproject (
