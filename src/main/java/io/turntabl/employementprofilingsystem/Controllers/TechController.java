@@ -3,6 +3,7 @@ package io.turntabl.employementprofilingsystem.Controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Models.AddTech;
+import io.turntabl.employementprofilingsystem.Models.EditTech;
 import io.turntabl.employementprofilingsystem.Transfers.Tech;
 import io.turntabl.employementprofilingsystem.Utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,7 @@ public class TechController {
     @ApiOperation("Edit Technology")
     @CrossOrigin(origins = "*")
     @PutMapping("/v1/api/editTechnology")
-    public void  editTechnology(@RequestBody AddTech requestData) {
+    public void  editTechnology(@RequestBody EditTech requestData) {
 
         Integer id = Integer.parseInt(requestData.getTech_id());
         Map<String, Object> response = new HashMap<>();
