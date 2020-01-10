@@ -180,7 +180,7 @@ public class ProjectController implements ProjectDAO {
         return response;
     }
 
-    @ApiOperation("Assign Projects to Employee")
+    @ApiOperation("Assign Project to Employee")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/project/{project_id}/assign/employee/{employee_id}")
     @Override
