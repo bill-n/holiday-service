@@ -14,4 +14,6 @@ public interface ProjectDAO {
     public Map<String, Object> getAllProjects();
     public Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
     public Map<String, Object> getProjectById(@PathVariable("id") Integer id);
+    public Map<String, Object> activateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id);
+    public Map<String, Object> deActivateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id);
 }

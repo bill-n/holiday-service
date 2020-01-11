@@ -224,6 +224,93 @@ public class ProjectController implements ProjectDAO {
         return response;
     }
 
+    @ApiOperation("Activate Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/active/employee/{employee_id}")
+    @Override
+    public Map<String, Object> activateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
+
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
+        request.put("project_id",project_id);
+        request.put("employee_id",employee_id);
+        try{
+            List<String> requiredParams = Arrays.asList(
+                    "project_id",
+                    "employee_id"
+            );
+            Map<String, Object> result = parsor.validate_params(request,requiredParams);
+            if (result.get("code").equals("00")){
+                int resp = jdbcTemplate.update(
+                        "update assignedproject set isworkingon = ? where employee_id = ? and project_id = ?",
+                        new Object[]{
+                                true,
+                                employee_id,
+                                project_id,
+                        }
+                );
+                if(resp > 0){
+                    response.put("code","00");
+                    response.put("msg","Project activated successfully on employee");
+                }else {
+                    response.put("code","01");
+                    response.put("msg","Failed to activate project on an employee");
+                }
+            }else {
+                response.put("code",result.get("code"));
+                response.put("msg",result.get("msg"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+    @ApiOperation("Deactivate Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/deactive/employee/{employee_id}")
+    @Override
+    public Map<String, Object> deActivateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
+
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
+        request.put("project_id",project_id);
+        request.put("employee_id",employee_id);
+        try{
+            List<String> requiredParams = Arrays.asList(
+                    "project_id",
+                    "employee_id"
+            );
+            Map<String, Object> result = parsor.validate_params(request,requiredParams);
+            if (result.get("code").equals("00")){
+                int resp = jdbcTemplate.update(
+                        "update assignedproject set isworkingon = ? where employee_id = ? and project_id = ?",
+                        new Object[]{
+                                false,
+                                employee_id,
+                                project_id,
+                        }
+                );
+                if(resp > 0){
+                    response.put("code","00");
+                    response.put("msg","Project deactivated successfully on employee");
+                }else {
+                    response.put("code","01");
+                    response.put("msg","Failed to deactivate project on an employee");
+                }
+            }else {
+                response.put("code",result.get("code"));
+                response.put("msg",result.get("msg"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+
 
     private SingleProjectTO SingleProjectTOrowMappper(Project project, List<Tech> techStack ) throws SQLException {
         SingleProjectTO singleProjectTO = new SingleProjectTO();
