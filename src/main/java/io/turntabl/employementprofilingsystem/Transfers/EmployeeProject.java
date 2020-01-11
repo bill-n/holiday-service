@@ -1,19 +1,17 @@
 package io.turntabl.employementprofilingsystem.Transfers;
 
-import org.springframework.stereotype.Component;
-
 import java.sql.Date;
 
-
-public class Project {
+public class EmployeeProject {
     private Integer project_id;
     private String project_name;
     private String project_description;
     private String project_status;
+    private Boolean isworkingon;
     private java.sql.Date project_start_date;
     private java.sql.Date project_end_date;
 
-    public Project() {
+    public EmployeeProject() {
     }
 
     public Integer getProject_id() {
@@ -46,6 +44,14 @@ public class Project {
 
     public void setProject_status(String project_status) {
         this.project_status = project_status;
+    }
+
+    public Boolean getIsworkingon() {
+        return isworkingon;
+    }
+
+    public void setIsworkingon(Boolean isworkingon) {
+        this.isworkingon = isworkingon;
     }
 
     public Date getProject_start_date() {

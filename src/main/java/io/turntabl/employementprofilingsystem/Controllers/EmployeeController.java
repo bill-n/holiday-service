@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 
 import io.turntabl.employementprofilingsystem.Models.AddEmployee;
-import io.turntabl.employementprofilingsystem.Transfers.Employee;
-import io.turntabl.employementprofilingsystem.Transfers.Project;
-import io.turntabl.employementprofilingsystem.Transfers.SingleProfileTO;
-import io.turntabl.employementprofilingsystem.Transfers.Tech;
+import io.turntabl.employementprofilingsystem.Transfers.*;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
 import io.turntabl.employementprofilingsystem.Utilities.Parsor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,10 +142,10 @@ class EmployeeController implements EmployeeDAO {
             );
 
             for (Employee employee: employeeTOList){
-                List<Project> projectTOS =  jdbcTemplate.query(
+                List<EmployeeProject> projectTOS =  jdbcTemplate.query(
                         "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
                         new Object[]{employee.getEmployee_id()},
-                        BeanPropertyRowMapper.newInstance(Project.class)
+                        BeanPropertyRowMapper.newInstance(EmployeeProject.class)
                 );
                 List<Tech>techStack =  jdbcTemplate.query(
 
@@ -193,10 +190,10 @@ class EmployeeController implements EmployeeDAO {
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
 
-                List<Project> projectTOS = jdbcTemplate.query(
+                List<EmployeeProject> projectTOS = jdbcTemplate.query(
                         "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
                         new Object[]{id},
-                        BeanPropertyRowMapper.newInstance(Project.class)
+                        BeanPropertyRowMapper.newInstance(EmployeeProject.class)
                 );
                 List<Tech> techStack = jdbcTemplate.query(
 
@@ -225,7 +222,7 @@ class EmployeeController implements EmployeeDAO {
         return response;
     }
 
-    private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<Project> projectTOS, List<Tech> techStack ) throws SQLException {
+    private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<EmployeeProject> projectTOS, List<Tech> techStack ) throws SQLException {
         SingleProfileTO singleProfileTO = new SingleProfileTO();
         singleProfileTO.setEmployee(employee);
         singleProfileTO.setProjects(projectTOS);

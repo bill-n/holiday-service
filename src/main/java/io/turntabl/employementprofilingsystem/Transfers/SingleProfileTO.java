@@ -5,7 +5,7 @@ import java.util.List;
 public class SingleProfileTO {
     private Employee employee;
     private List<Tech> tech_stack;
-    private List<Project> projects;
+    private List<EmployeeProject> projects;
 
     public SingleProfileTO() {
     }
@@ -18,11 +18,11 @@ public class SingleProfileTO {
         this.employee = employee;
     }
 
-    public List<Project> getProjects() {
+    public List<EmployeeProject> getProjects() {
         return projects;
     }
 
-    public void setProjects(List<Project> projects) {
+    public void setProjects(List<EmployeeProject> projects) {
         this.projects = projects;
     }
 

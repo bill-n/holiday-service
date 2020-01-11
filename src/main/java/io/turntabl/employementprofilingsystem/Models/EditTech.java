@@ -1,18 +1,18 @@
 package io.turntabl.employementprofilingsystem.Models;
 
 public class EditTech {
-    private String tech_id;
+    private Integer tech_id;
     private String tech_name;
     private String tech_status;
 
     public EditTech() {
     }
 
-    public String getTech_id() {
+    public Integer getTech_id() {
         return tech_id;
     }
 
-    public void setTech_id(String tech_id) {
+    public void setTech_id(Integer tech_id) {
         this.tech_id = tech_id;
     }
 

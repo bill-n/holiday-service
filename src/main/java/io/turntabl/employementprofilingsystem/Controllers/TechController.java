@@ -46,7 +46,7 @@ public class TechController {
     }
     @ApiOperation("Add New Technology")
     @CrossOrigin(origins = "*")
-    @PostMapping("/v1/api/addtechnology")
+    @PostMapping("/v1/api/technology")
     public Map<String, Object> addTechnology(@RequestBody AddTech requestData) {
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
@@ -66,9 +66,9 @@ public class TechController {
                 );
                 response.put("code", "00");
                 response.put("msg", "New technology added successfully");
-            } else {
-                response.put("code", "01");
-                response.put("msg", "Failed to add new technology, try again");
+            }else{
+                response.put("code",result.get("code"));
+                response.put("msg",result.get("msg"));
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -76,7 +76,6 @@ public class TechController {
             response.put("msg","Something went wrong, try again later");
         }
         return response;
-
     }
 
     public Optional<List<Tech>> searchTechByID(Integer techID) {
@@ -90,42 +89,46 @@ public class TechController {
 
     @ApiOperation("Edit Technology")
     @CrossOrigin(origins = "*")
-    @PutMapping("/v1/api/editTechnology")
-    public void  editTechnology(@RequestBody EditTech requestData) {
+    @PutMapping("/v1/api/technology")
+    public Map<String, Object> editTechnology(@RequestBody EditTech requestData) {
 
-        Integer id = Integer.parseInt(requestData.getTech_id());
+        Integer id = requestData.getTech_id();
         Map<String, Object> response = new HashMap<>();
-        Optional<List<Tech>> technology = searchTechByID(Integer.parseInt(requestData.getTech_id()));
-//        String tech_name;
-//        String tech_status;
+        try{
+            Optional<List<Tech>> technology = searchTechByID(id);
 
-        if (technology.isPresent()) {
-            String tech_name;
-            String tech_status;
+            if (technology.isPresent()) {
+                String tech_name;
+                String tech_status;
 
-            if (requestData.getTech_name().isEmpty()) {
-                tech_name = technology.get().get(0).getTech_name();
+                if (requestData.getTech_name().isEmpty()) {
+                    tech_name = technology.get().get(0).getTech_name();
+                }else {
+                    tech_name = requestData.getTech_name();
+                }
+                if (requestData.getTech_status().isEmpty()) {
+                    tech_status = technology.get().get(0).getTech_status();
+                }else {
+                    tech_status = requestData.getTech_status();
+                }
+                jdbcTemplate.update(
+                        "update tech set tech_name = ?, tech_status = ? where tech_id = ?",
+                        new Object[]{tech_name, tech_status.toUpperCase(), id}
+                );
+                response.put("code","00");
+                response.put("msg","Technology updated successfully");
+
             } else {
-                tech_name = requestData.getTech_name();
+                response.put("code","00");
+                response.put("msg","Technology does not exist!");
             }
-            if (requestData.getTech_status().isEmpty()) {
-                tech_status = technology.get().get(0).getTech_status();
-            } else {
-                tech_status = requestData.getTech_status();
-            }
-            jdbcTemplate.update(
-                    "update tech set tech_name = ?, tech_status = ? where tech_id = ?",
-                    new Object[]{tech_name, tech_status, id}
-            );
-            response.put("code","00");
-            response.put("msg","Technology updated successfully");
-
-        } else {
-            response.put("code","00");
-            response.put("msg","Technology does not exist!");
-
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
         }
-    }
 
+        return response;
+    }
 }
 
