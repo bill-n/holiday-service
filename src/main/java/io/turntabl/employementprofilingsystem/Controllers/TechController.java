@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Models.AddTech;
 import io.turntabl.employementprofilingsystem.Models.EditTech;
+import io.turntabl.employementprofilingsystem.Transfers.Employee;
 import io.turntabl.employementprofilingsystem.Transfers.Tech;
 import io.turntabl.employementprofilingsystem.Utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,19 +58,30 @@ public class TechController {
             List<String> requiredParams = Arrays.asList("tech_name", "tech_status");
             Map<String, Object> result = parsor.validate_params(request, requiredParams);
             if (result.get("code").equals("00")) {
-                jdbcTemplate.update(
-                        "insert into tech(tech_name, tech_status) values(?,?)",
-                        new Object[]{
-                                requestData.getTech_name(),
-                                requestData.getTech_status()
-                        }
+                List<Tech> tech = jdbcTemplate.query(
+                        "select * from tech where tech_name = ?",
+                        new Object[]{requestData.getTech_name().toUpperCase()},
+                        BeanPropertyRowMapper.newInstance(Tech.class)
                 );
-                response.put("code", "00");
-                response.put("msg", "New technology added successfully");
-            }else{
-                response.put("code",result.get("code"));
-                response.put("msg",result.get("msg"));
-            }
+                if (tech.isEmpty()) {
+                    jdbcTemplate.update(
+                            "insert into tech(tech_name, tech_status) values(?,?)",
+                            new Object[]{
+                                    requestData.getTech_name().toUpperCase(),
+                                    requestData.getTech_status().toUpperCase()
+                            }
+                    );
+                    response.put("code", "00");
+                    response.put("msg", "New technology added successfully");
+                }
+                else {
+                    response.put("code", "01");
+                    response.put("msg", "Technology with such name already exists!");
+                }
+            }else {
+                    response.put("code", result.get("code"));
+                    response.put("msg", result.get("msg"));
+                }
         }catch (Exception e){
             e.printStackTrace();
             response.put("code","02");
@@ -78,12 +90,12 @@ public class TechController {
         return response;
     }
 
-    public Optional<List<Tech>> searchTechByID(Integer techID) {
-        Optional<List<Tech>> technology = Optional.ofNullable(jdbcTemplate.query(
+    public List<Tech> searchTechByID(Integer techID) {
+       List<Tech> technology = jdbcTemplate.query(
                 "select * from tech where tech_id = ?",
                 new Object[]{techID},
                 BeanPropertyRowMapper.newInstance(Tech.class)
-        ));
+        );
         return technology;
     }
 
@@ -95,25 +107,25 @@ public class TechController {
         Integer id = requestData.getTech_id();
         Map<String, Object> response = new HashMap<>();
         try{
-            Optional<List<Tech>> technology = searchTechByID(id);
+            List<Tech> technology = searchTechByID(id);
 
-            if (technology.isPresent()) {
+            if (!technology.isEmpty()) {
                 String tech_name;
                 String tech_status;
 
                 if (requestData.getTech_name().isEmpty()) {
-                    tech_name = technology.get().get(0).getTech_name();
+                    tech_name = technology.get(0).getTech_name();
                 }else {
-                    tech_name = requestData.getTech_name();
+                    tech_name = requestData.getTech_name().toUpperCase();
                 }
                 if (requestData.getTech_status().isEmpty()) {
-                    tech_status = technology.get().get(0).getTech_status();
+                    tech_status = technology.get(0).getTech_status();
                 }else {
-                    tech_status = requestData.getTech_status();
+                    tech_status = requestData.getTech_status().toUpperCase();
                 }
                 jdbcTemplate.update(
                         "update tech set tech_name = ?, tech_status = ? where tech_id = ?",
-                        new Object[]{tech_name, tech_status.toUpperCase(), id}
+                        new Object[]{tech_name, tech_status, id}
                 );
                 response.put("code","00");
                 response.put("msg","Technology updated successfully");
@@ -128,6 +140,26 @@ public class TechController {
             response.put("msg","Something went wrong, try again later");
         }
 
+        return response;
+    }
+
+    private Boolean checkExistingTechnology(String email, String phoneNumber){
+        Boolean response = null;
+
+        try{
+            List<Employee> employee = jdbcTemplate.query(
+                    "select * from employee where employee_email = ? or employee_phonenumber = ? ",
+                    new Object[]{email, phoneNumber},
+                    BeanPropertyRowMapper.newInstance(Employee.class)
+            );
+            if (employee.isEmpty()){
+                response = false;
+            }else {
+                response = true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return response;
     }
 }

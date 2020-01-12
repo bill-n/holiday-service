@@ -4,6 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.DAO.ProjectDAO;
 import io.turntabl.employementprofilingsystem.Models.AddProject;
+import io.turntabl.employementprofilingsystem.Models.EditEmployee;
+import io.turntabl.employementprofilingsystem.Models.EditProject;
 import io.turntabl.employementprofilingsystem.Transfers.*;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
 import io.turntabl.employementprofilingsystem.Utilities.Parsor;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Api
 @RestController
@@ -308,6 +311,149 @@ public class ProjectController implements ProjectDAO {
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
         }
+        return response;
+    }
+
+    @ApiOperation("Edit Project Details")
+    @CrossOrigin(origins = "*")
+    @PutMapping("/v1/api/project")
+    public Map<String, Object> updateProjectDetails(@RequestBody EditProject editProject){
+        List<SingleProfileTO> result = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
+        request.put("project_id",editProject.getProject_id());
+        request.put("project_name",editProject.getProject_name());
+        request.put("project_description",editProject.getProject_description());
+        request.put("project_status",editProject.getProject_status());
+        request.put("project_start_date",editProject.getProject_start_date());
+        request.put("project_end_date",editProject.getProject_end_date());
+
+        try{
+            List<String> requiredParams = Arrays.asList(
+                    "project_id"
+            );
+            Map<String, Object> valid = parsor.validate_params(request,requiredParams);
+            if (valid.get("code").equals("00")){
+                Map<String, Object> updated_params = this.check_updated_params(editProject);
+                if (updated_params.get("code").equals("00")){
+                    UpdateProject updateProject = (UpdateProject) updated_params.get("data");
+                    jdbcTemplate.update(
+                            "update project set project_name = ?, project_description = ?, project_status = ?, project_start_date = ?, project_end_date = ? where project_id = ?",
+                            new Object[]{
+                                    updateProject.getProject_name(),
+                                    updateProject.getProject_description(),
+                                    updateProject.getProject_status().toUpperCase(),
+                                    updateProject.getProject_start_date(),
+                                    updateProject.getProject_end_date(),
+                                    editProject.getProject_id()
+                            }
+                    );
+                    List<Integer> project_current_tech = updateProject.getProject_tech_stack();
+
+                    jdbcTemplate.update(
+                            "delete from techproject where project_id = ?",
+                            new Object[]{
+                                    editProject.getProject_id()
+                            }
+                    );
+
+                    for(Integer tech: project_current_tech){
+                        jdbcTemplate.update(
+                                "insert into techproject(tech_id,project_id) values(?,?)",
+                                new Object[]{
+                                        tech,
+                                        editProject.getProject_id()
+                                }
+                        );
+                    }
+
+                    response.put("code","00");
+                    response.put("msg","Project details updated successfully");
+
+                }else {
+                    response.put("code",valid.get("code"));
+                    response.put("msg",valid.get("msg"));
+                }
+            }else {
+                response.put("code",valid.get("code"));
+                response.put("msg",valid.get("msg"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+
+    private Map<String, Object> check_updated_params(EditProject editProject){
+        Map<String, Object> response = new HashMap<>();
+        UpdateProject updateProject = new UpdateProject();
+        try{
+            Integer project_id = editProject.getProject_id();
+            List<Project> project = jdbcTemplate.query(
+                    "select * from project where project_id = ?",
+                    new Object[]{project_id},
+                    BeanPropertyRowMapper.newInstance(Project.class)
+            );
+            List<Tech> techStack = jdbcTemplate.query(
+
+                    "select * from tech inner join techproject on tech.tech_id = techproject.tech_id inner join project on techproject.project_id = project.project_id where project.project_id = ? ",
+                    new Object[]{project_id},
+                    BeanPropertyRowMapper.newInstance(Tech.class)
+            );
+            List<Integer> techs = techStack.stream()
+                    .map(tech -> tech.getTech_id())
+                    .collect(Collectors.toList());
+
+            if (!project.isEmpty()){
+                Project projectDetails = project.get(0);
+                if(editProject.getProject_name().isEmpty()){
+                    updateProject.setProject_name(projectDetails.getProject_name());
+                }else {
+                    updateProject.setProject_name(editProject.getProject_name());
+                }
+                if(editProject.getProject_description().isEmpty()){
+                    updateProject.setProject_description(projectDetails.getProject_description());
+                }else {
+                    updateProject.setProject_description(editProject.getProject_description());
+                }
+                if(editProject.getProject_status().isEmpty()){
+                    updateProject.setProject_status(projectDetails.getProject_status());
+                }else {
+                    updateProject.setProject_status(editProject.getProject_status());
+                }
+                if(editProject.getProject_start_date().isEmpty()){
+                    updateProject.setProject_start_date(projectDetails.getProject_start_date());
+                }else {
+                    java.sql.Date start_date = java.sql.Date.valueOf(editProject.getProject_start_date());
+                    updateProject.setProject_start_date(start_date);
+                }
+                if(editProject.getProject_end_date().isEmpty()){
+                    updateProject.setProject_end_date(projectDetails.getProject_end_date());
+                }else {
+                    java.sql.Date end_date = java.sql.Date.valueOf(editProject.getProject_end_date());
+                    updateProject.setProject_end_date(end_date);
+                }
+                if(editProject.getProject_tech_stack().isEmpty()){
+                    updateProject.setProject_tech_stack(techs);
+                }else {
+                    updateProject.setProject_tech_stack(editProject.getProject_tech_stack());
+                }
+                response.put("code","00");
+                response.put("msg","Data retrieved successfully");
+                response.put("data",updateProject);
+
+            }else {
+                response.put("code","01");
+                response.put("msg","Project data with this ID ["+project_id+"] doesn't exist");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+
         return response;
     }
 
