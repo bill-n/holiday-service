@@ -15,7 +15,7 @@ import java.util.*;
 
 @Api
 @RestController
-public class LoginController {
+public class AuthController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -24,24 +24,36 @@ public class LoginController {
     @ApiOperation("Get Employee By Email")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/login/{employee_email}")
-    public List<Employee> getEmployeeProfileById(@PathVariable("employee_email") String email) {
-        List<Employee> employee = new ArrayList<>();
+    public Map<String,Object> getEmployeeById(@PathVariable("employee_email") String email) {
+
         Map<String, Object> request = new HashMap<>();
-        request.put("employee_email", email);
+        Map<String, Object> response = new HashMap<>();
+
+        try{
+            request.put("employee_email", email);
 
             List<String> requiredParams = Arrays.asList(
                     "employee_email"
             );
             Map<String, Object> valid = parsor.validate_params(request, requiredParams);
             if (valid.get("code").equals("00")) {
-                employee = jdbcTemplate.query(
+                List<Employee>  employee = jdbcTemplate.query(
                         "select * from employee where employee_email = ?",
                         new Object[]{email},
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
-
+                response.put("code","00");
+                response.put("msg","Data retrieved successfully");
+                response.put("data",employee.get(0));
+            }else {
+                response.put("code",valid.get("code"));
+                response.put("msg",valid.get("msg"));
             }
-                return employee;
-
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
     }
 }
