@@ -42,9 +42,15 @@ public class AuthController {
                         new Object[]{email},
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
-                response.put("code","00");
-                response.put("msg","Data retrieved successfully");
-                response.put("data",employee.get(0));
+                if (!employee.isEmpty()){
+                    response.put("code","00");
+                    response.put("msg","Data retrieved successfully");
+                    response.put("data",employee.get(0));
+                }else{
+                    response.put("code","00");
+                    response.put("msg","No Data Found");
+                }
+
             }else {
                 response.put("code",valid.get("code"));
                 response.put("msg",valid.get("msg"));
