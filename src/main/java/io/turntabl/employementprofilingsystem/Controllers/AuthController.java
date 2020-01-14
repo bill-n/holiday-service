@@ -24,7 +24,7 @@ public class AuthController {
     @ApiOperation("Get Employee By Email")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/login/{employee_email}")
-    public Map<String,Object> getEmployeeById(@PathVariable("employee_email") String email) {
+    public Map<String,Object> getEmployeeByEmail(@PathVariable("employee_email") String email) {
 
         Map<String, Object> request = new HashMap<>();
         Map<String, Object> response = new HashMap<>();
@@ -43,9 +43,15 @@ public class AuthController {
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
                 if (!employee.isEmpty()){
+                    Employee employeeData = employee.get(0);
+                    List<EmployeeProject> projectTOS = jdbcTemplate.query(
+                            "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
+                            new Object[]{employeeData.getEmployee_id()},
+                            BeanPropertyRowMapper.newInstance(EmployeeProject.class)
+                    );
                     response.put("code","00");
                     response.put("msg","Data retrieved successfully");
-                    response.put("data",employee.get(0));
+                    response.put("data",this.SingleEmployeeTOrowMappper(employeeData,projectTOS));
                 }else{
                     response.put("code","00");
                     response.put("msg","No Data Found");
@@ -61,5 +67,12 @@ public class AuthController {
             response.put("msg","Something went wrong, try again later");
         }
         return response;
+    }
+
+    private SingleEmployeeTO SingleEmployeeTOrowMappper(Employee employee, List<EmployeeProject> projectTOS) throws SQLException {
+        SingleEmployeeTO singleEmployeeTO = new SingleEmployeeTO();
+        singleEmployeeTO.setEmployee(employee);
+        singleEmployeeTO.setProjects(projectTOS);
+        return singleEmployeeTO;
     }
 }
