@@ -4,12 +4,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.DAO.ProjectDAO;
 import io.turntabl.employementprofilingsystem.Models.AddProject;
-import io.turntabl.employementprofilingsystem.Models.EditEmployee;
 import io.turntabl.employementprofilingsystem.Models.EditProject;
 import io.turntabl.employementprofilingsystem.Transfers.*;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
 import io.turntabl.employementprofilingsystem.Utilities.Parsor;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -187,7 +185,7 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/project/{project_id}/assign/employee/{employee_id}")
     @Override
-    public Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
+    public Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id){
 
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
@@ -227,11 +225,67 @@ public class ProjectController implements ProjectDAO {
         return response;
     }
 
+    @ApiOperation("Get Assigned Projects By Employee Id")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/projects/assigned/employee/{id}")
+//    @Override
+    public Map<String, Object> getEmployeeAssignedProjects(@PathVariable("id") Integer id){
+        List<SingleProfileTO> result = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
+        request.put("id",id);
+
+        try{
+            List<String> requiredParams = Arrays.asList(
+                    "id"
+            );
+            Map<String, Object> valid = parsor.validate_params(request,requiredParams);
+            if (valid.get("code").equals("00")){
+
+                List<Employee> employee = jdbcTemplate.query(
+                        "select * from employee where employee_id = ?",
+                        new Object[]{id},
+                        BeanPropertyRowMapper.newInstance(Employee.class)
+                );
+
+                if (!employee.isEmpty()){
+                    List<EmployeeProject> projectTOS = jdbcTemplate.query(
+                            "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
+                            new Object[]{id},
+                            BeanPropertyRowMapper.newInstance(EmployeeProject.class)
+                    );
+                    response.put("code","00");
+                    response.put("msg","Data retrieved successfully");
+                    response.put("data",this.SingleEmployeeAssignedProjectTOrowMappper(employee.get(0),projectTOS));
+                }else {
+                    response.put("code","00");
+                    response.put("msg","No Data found");
+                    response.put("data",new HashMap<>());
+                }
+            }else {
+                response.put("code",valid.get("code"));
+                response.put("msg",valid.get("msg"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
+
+    private SingleEmployeeAssignedProjectTO SingleEmployeeAssignedProjectTOrowMappper(Employee employee, List<EmployeeProject> projectTOS ) throws SQLException {
+        SingleEmployeeAssignedProjectTO  singleEmployeeAssignedProjectTO = new SingleEmployeeAssignedProjectTO();
+        singleEmployeeAssignedProjectTO.setEmployee(employee);
+        singleEmployeeAssignedProjectTO.setProjects(projectTOS);
+        return singleEmployeeAssignedProjectTO;
+    }
+
     @ApiOperation("Activate Project on Employee")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/project/{project_id}/active/employee/{employee_id}")
     @Override
-    public Map<String, Object> activateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
+    public Map<String, Object> activateEmployeeProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id){
 
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
@@ -274,7 +328,7 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/project/{project_id}/deactive/employee/{employee_id}")
     @Override
-    public Map<String, Object> deActivateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id){
+    public Map<String, Object> deActivateEmployeeProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id){
 
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
@@ -314,6 +368,7 @@ public class ProjectController implements ProjectDAO {
         return response;
     }
 
+    @Override
     @ApiOperation("Edit Project Details")
     @CrossOrigin(origins = "*")
     @PutMapping("/v1/api/project")
@@ -458,6 +513,8 @@ public class ProjectController implements ProjectDAO {
     }
 
 
+
+
     private SingleProjectTO SingleProjectTOrowMappper(Project project, List<Tech> techStack ) throws SQLException {
         SingleProjectTO singleProjectTO = new SingleProjectTO();
         singleProjectTO.setProject(project);
@@ -465,6 +522,7 @@ public class ProjectController implements ProjectDAO {
         return singleProjectTO;
     }
 
+    @Override
     public void deleteProjectRow(Long id){
         String sql = "delete from project where project_id = ? ";
         jdbcTemplate.update(

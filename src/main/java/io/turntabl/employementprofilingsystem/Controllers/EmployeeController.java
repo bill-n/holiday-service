@@ -2,8 +2,8 @@ package io.turntabl.employementprofilingsystem.Controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 
+import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 import io.turntabl.employementprofilingsystem.Models.AddEmployee;
 import io.turntabl.employementprofilingsystem.Models.EditEmployee;
 import io.turntabl.employementprofilingsystem.Transfers.*;
@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Api
 @RestController
-class EmployeeController implements EmployeeDAO {
+class EmployeeController implements EmployeeDAO{
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -187,18 +186,20 @@ class EmployeeController implements EmployeeDAO {
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
 
-                List<EmployeeProject> projectTOS = jdbcTemplate.query(
-                        "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
-                        new Object[]{id},
-                        BeanPropertyRowMapper.newInstance(EmployeeProject.class)
-                );
-                List<Tech> techStack = jdbcTemplate.query(
 
-                        "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
-                        new Object[]{id},
-                        BeanPropertyRowMapper.newInstance(Tech.class)
-                );
                 if (!employee.isEmpty()){
+
+                    List<EmployeeProject> projectTOS = jdbcTemplate.query(
+                            "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
+                            new Object[]{id},
+                            BeanPropertyRowMapper.newInstance(EmployeeProject.class)
+                    );
+                    List<Tech> techStack = jdbcTemplate.query(
+
+                            "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
+                            new Object[]{id},
+                            BeanPropertyRowMapper.newInstance(Tech.class)
+                    );
                     response.put("code","00");
                     response.put("msg","Data retrieved successfully");
                     response.put("data",this.SingleProfileTOrowMappper(employee.get(0),projectTOS, techStack));
