@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.DAO.ProjectDAO;
 import io.turntabl.employementprofilingsystem.Models.AddProject;
+import io.turntabl.employementprofilingsystem.Models.AssignedProjectTable;
 import io.turntabl.employementprofilingsystem.Models.EditProject;
 import io.turntabl.employementprofilingsystem.Transfers.*;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
@@ -198,20 +199,37 @@ public class ProjectController implements ProjectDAO {
             );
             Map<String, Object> result = parsor.validate_params(request,requiredParams);
             if (result.get("code").equals("00")){
-                int resp = jdbcTemplate.update(
-                        "insert into assignedproject(employee_id,project_id,isworkingon) values(?,?,?)",
-                        new Object[]{
-                                employee_id,
-                                project_id,
-                                true
-                        }
+                List<AssignedProjectTable> assignedProjectTables =  jdbcTemplate.query(
+                        "select * from assignedproject where employee_id = ?",
+                        new Object[]{employee_id},
+                        BeanPropertyRowMapper.newInstance(AssignedProjectTable.class)
                 );
-                if(resp > 0){
-                    response.put("code","00");
-                    response.put("msg","Project assigned successfully");
-                }else {
+                List<Integer> existingAssgnProjects = new ArrayList<>();
+                for(AssignedProjectTable assignedProjectTable :assignedProjectTables){
+                    if (assignedProjectTable.getProject_id().equals(project_id)){
+                        existingAssgnProjects.add(assignedProjectTable.getProject_id());
+                    }
+                }
+                if (existingAssgnProjects.isEmpty()){
+
+                    int resp = jdbcTemplate.update(
+                            "insert into assignedproject(employee_id,project_id,isworkingon) values(?,?,?)",
+                            new Object[]{
+                                    employee_id,
+                                    project_id,
+                                    true
+                            }
+                    );
+                    if(resp > 0){
+                        response.put("code","00");
+                        response.put("msg","Project assigned successfully");
+                    }else {
+                        response.put("code","01");
+                        response.put("msg","Failed to assign project to an employee");
+                    }
+                }else{
                     response.put("code","01");
-                    response.put("msg","Failed to assign project to an employee");
+                    response.put("msg","Employee has already been assigned to this project");
                 }
             }else {
                 response.put("code",result.get("code"));
