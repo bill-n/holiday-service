@@ -50,18 +50,9 @@ class EmployeeController implements EmployeeDAO{
         try{
 
             List<String> requiredParams = Arrays.asList(
-                    "employee_firstname",
-                    "employee_lastname",
-                    "employee_phonenumber",
                     "employee_email",
-                    "employee_role",
-                    "employee_address",
-                    "employee_dev_level",
-                    "employee_gender",
-                    "employee_status",
-                    "employee_tech_stack"
+                    "employee_role"
             );
-
             Map<String, Object> result = parsor.validate_params(request,requiredParams);
             if (result.get("code").equals("00")){
 
