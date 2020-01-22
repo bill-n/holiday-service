@@ -9,7 +9,6 @@ import io.turntabl.employementprofilingsystem.Transfers.LoggedSickTO;
 import io.turntabl.employementprofilingsystem.Transfers.LoggedTO;
 import io.turntabl.employementprofilingsystem.Transfers.LoggedVacationTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +28,8 @@ public class LoggedController implements LoggedDAO {
     @PostMapping("/v1/api/addloggedproject")
     @Override
     public void addLoggedProject(@RequestBody LoggedProjectTO loggedProjectTO) {
-         this.jdbcTemplate.update("insert into LoggedProject (project_id, emp_id, project_hours, project_date) values (?, ?, ?, ?)",
-                loggedProjectTO.getProject_id(), loggedProjectTO.getEmp_id(), loggedProjectTO.getProject_hours(), loggedProjectTO.getProject_date());
+         this.jdbcTemplate.update("insert into LoggedProject (project_id, employee_id, project_hours, project_date) values (?, ?, ?, ?)",
+                loggedProjectTO.getProject_id(), loggedProjectTO.getEmployee_id(), loggedProjectTO.getProject_hours(), loggedProjectTO.getProject_date());
 
     }
 
@@ -57,8 +56,8 @@ public class LoggedController implements LoggedDAO {
     @PostMapping("/v1/api/addloggedsick")
     @Override
     public void addLoggedSick(@RequestBody LoggedSickTO loggedSickTO) {
-        this.jdbcTemplate.update("insert into LoggedSick (emp_id, sick_date) values (?, ?)",
-               loggedSickTO.getEmp_id(), loggedSickTO.getSick_date());
+        this.jdbcTemplate.update("insert into LoggedSick (employee_id, sick_date) values (?, ?)",
+               loggedSickTO.getEmployee_id(), loggedSickTO.getSick_date());
 
     }
 
@@ -77,8 +76,8 @@ public class LoggedController implements LoggedDAO {
     @PostMapping("/v1/api/addloggedvaction")
     @Override
     public void addLoggedVacation(@RequestBody LoggedVacationTO loggedVacationTO) {
-        this.jdbcTemplate.update("insert into LoggedVacation (emp_id, vacation_date) values (?, ?)",
-                loggedVacationTO.getEmp_id(), loggedVacationTO.getVacation_date());
+        this.jdbcTemplate.update("insert into LoggedVacation (employee_id, vacation_date) values (?, ?)",
+                loggedVacationTO.getEmployee_id(), loggedVacationTO.getVacation_date());
 
     }
 

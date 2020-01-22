@@ -3,7 +3,7 @@ package io.turntabl.employementprofilingsystem.Transfers;
 import java.sql.Date;
 
 public class LoggedVacationTO {
-    private Integer emp_id;
+    private Integer employee_id;
     private java.sql.Date vacation_date;
 
 
@@ -11,12 +11,12 @@ public class LoggedVacationTO {
 
     }
 
-    public Integer getEmp_id() {
-        return emp_id;
+    public Integer getEmployee_id() {
+        return employee_id;
     }
 
-    public void setEmp_id(Integer emp_id) {
-        this.emp_id = emp_id;
+    public void setEmployee_id(Integer employee_id) {
+        this.employee_id = employee_id;
     }
 
     public Date getVacation_date() {

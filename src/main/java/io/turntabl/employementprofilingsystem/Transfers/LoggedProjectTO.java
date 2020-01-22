@@ -7,7 +7,7 @@ public class LoggedProjectTO {
     private Integer project_id;
     private Integer project_hours;
     private java.sql.Date project_date;
-    private Integer emp_id;
+    private Integer employee_id;
 
     public LoggedProjectTO(){
 
@@ -37,12 +37,12 @@ public class LoggedProjectTO {
         this.project_date = project_date;
     }
 
-    public Integer getEmp_id() {
-        return emp_id;
+    public Integer getEmployee_id() {
+        return employee_id;
     }
 
-    public void setEmp_id(Integer emp_id) {
-        this.emp_id = emp_id;
+    public void setEmployee_id(Integer employee_id) {
+        this.employee_id = employee_id;
     }
 }
 
