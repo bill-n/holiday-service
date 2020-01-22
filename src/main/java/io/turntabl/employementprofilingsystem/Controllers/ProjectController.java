@@ -40,7 +40,6 @@ public class ProjectController implements ProjectDAO {
         request.put("project_description",requestData.getProject_description());
         request.put("project_start_date",requestData.getProject_start_date());
         request.put("project_end_date",requestData.getProject_end_date());
-        request.put("project_status",requestData.getProject_status());
         request.put("project_tech_stack",requestData.getProject_tech_stack());
 
         try{
@@ -50,7 +49,6 @@ public class ProjectController implements ProjectDAO {
                     "project_description",
                     "project_start_date",
                     "project_end_date",
-                    "project_status",
                     "project_tech_stack"
             );
 
@@ -59,7 +57,6 @@ public class ProjectController implements ProjectDAO {
 
                 String project_startDate =  requestData.getProject_start_date();
                 String project_endDate = requestData.getProject_end_date();
-                String project_status = requestData.getProject_status();
 
                 java.sql.Date project_start_date = date.getDateObject(project_startDate);
                 java.sql.Date project_end_date = date.getDateObject(project_endDate);
@@ -71,7 +68,6 @@ public class ProjectController implements ProjectDAO {
                 parameters.put("project_description",requestData.getProject_description());
                 parameters.put("project_start_date",project_start_date);
                 parameters.put("project_end_date",project_end_date);
-                parameters.put("project_status",project_status.toUpperCase());
 
                 Number key = insertActor.executeAndReturnKey(parameters);
                 Long project_key = key.longValue();

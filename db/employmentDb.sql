@@ -22,8 +22,7 @@ CREATE TABLE project (
 	project_name text not null,
 	project_description text not null,
 	project_start_date DATE not null,
-	project_end_date DATE not null,
-	project_status text not null
+	project_end_date DATE not null
 );
 
 CREATE TABLE tech (
