@@ -1,5 +1,0 @@
-option_settings:
-  aws:elb:listener:443:
-    SSLCertificateId: arn:aws:acm:us-east-2:926377470665:certificate/4ff21745-e049-4f50-8109-afddf92679c8
-    ListenerProtocol: HTTPS
-    InstancePort: 80
