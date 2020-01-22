@@ -11,24 +11,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface LoggedDAO {
 
-    void addLoggedProject(LoggedProjectTO loggedProjectTO);
+    Map<String, Object> addLoggedProject(LoggedProjectTO loggedProjectTO);
 
-    List<LoggedProjectTO> getAllLoggedProject();
+   // List<LoggedProjectTO>
+    Map<String, Object> getAllLoggedProject();
 
 
-    void addLoggedSick(LoggedSickTO loggedSickTO);
+    Map<String, Object> addLoggedSick(LoggedSickTO loggedSickTO);
 
-    List<LoggedSickTO> getAllLoggedSick();
+   // List<LoggedSickTO>
+    Map<String, Object> getAllLoggedSick();
 
-    void addLoggedVacation(LoggedVacationTO loggedVacationTO);
+    Map<String, Object> addLoggedVacation(LoggedVacationTO loggedVacationTO);
 
-    List<LoggedVacationTO> getAllLoggedVacation();
+   // List<LoggedVacationTO>
+    Map<String, Object> getAllLoggedVacation();
 
-  //  List<LoggedTO> getAllLogged(Date startDate, Date endDate);
 
-   List<LoggedTO> getAllLogged( java.sql.Date startDate, java.sql.Date endDate);
+
+  // List<LoggedTO>
+    Map<String, Object> getAllLogged( java.sql.Date startDate, java.sql.Date endDate);
 }
 
