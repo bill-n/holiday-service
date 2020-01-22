@@ -393,7 +393,6 @@ public class ProjectController implements ProjectDAO {
         request.put("project_id",editProject.getProject_id());
         request.put("project_name",editProject.getProject_name());
         request.put("project_description",editProject.getProject_description());
-        request.put("project_status",editProject.getProject_status());
         request.put("project_start_date",editProject.getProject_start_date());
         request.put("project_end_date",editProject.getProject_end_date());
 
@@ -407,11 +406,10 @@ public class ProjectController implements ProjectDAO {
                 if (updated_params.get("code").equals("00")){
                     UpdateProject updateProject = (UpdateProject) updated_params.get("data");
                     jdbcTemplate.update(
-                            "update project set project_name = ?, project_description = ?, project_status = ?, project_start_date = ?, project_end_date = ? where project_id = ?",
+                            "update project set project_name = ?, project_description = ?, project_start_date = ?, project_end_date = ? where project_id = ?",
                             new Object[]{
                                     updateProject.getProject_name(),
                                     updateProject.getProject_description(),
-                                    updateProject.getProject_status().toUpperCase(),
                                     updateProject.getProject_start_date(),
                                     updateProject.getProject_end_date(),
                                     editProject.getProject_id()
@@ -486,11 +484,6 @@ public class ProjectController implements ProjectDAO {
                     updateProject.setProject_description(projectDetails.getProject_description());
                 }else {
                     updateProject.setProject_description(editProject.getProject_description());
-                }
-                if(editProject.getProject_status().isEmpty()){
-                    updateProject.setProject_status(projectDetails.getProject_status());
-                }else {
-                    updateProject.setProject_status(editProject.getProject_status());
                 }
                 if(editProject.getProject_start_date().isEmpty()){
                     updateProject.setProject_start_date(projectDetails.getProject_start_date());
