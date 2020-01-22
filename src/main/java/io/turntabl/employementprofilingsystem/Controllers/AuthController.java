@@ -55,7 +55,7 @@ public class AuthController {
                 }else{
                     response.put("code","00");
                     response.put("msg","No Data Found");
-                    response.put("msg",new HashMap<>());
+                    response.put("data",new HashMap<>());
                 }
 
             }else {
