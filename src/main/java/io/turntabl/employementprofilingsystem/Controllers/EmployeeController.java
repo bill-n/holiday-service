@@ -56,9 +56,9 @@ class EmployeeController implements EmployeeDAO{
             Map<String, Object> result = parsor.validate_params(request,requiredParams);
             if (result.get("code").equals("00")){
 
-                if (this.checkExistingEmployee(requestData.getEmployee_email(),requestData.getEmployee_phonenumber())){
+                if (this.checkExistingEmployee(requestData.getEmployee_email())){
                     response.put("code","01");
-                    response.put("msg","Employee already exist with the same email and/or phone number");
+                    response.put("msg","Employee already exist with the same email");
                 }else {
                     java.sql.Date employee_hire_date = date.getCurrentDate();
                     Boolean employee_onleave = false;
@@ -392,13 +392,13 @@ class EmployeeController implements EmployeeDAO{
         singleProfileTO.setTech_stack(techStack);
         return singleProfileTO;
     }
-    private Boolean checkExistingEmployee(String email, String phoneNumber){
+    private Boolean checkExistingEmployee(String email){
         Boolean response = null;
 
         try{
             List<Employee> employee = jdbcTemplate.query(
-                    "select * from employee where employee_email = ? or employee_phonenumber = ? ",
-                    new Object[]{email, phoneNumber},
+                    "select * from employee where employee_email = ?",
+                    new Object[]{email},
                     BeanPropertyRowMapper.newInstance(Employee.class)
             );
             if (employee.isEmpty()){
