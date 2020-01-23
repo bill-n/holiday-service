@@ -10,7 +10,6 @@ public class EditEmployee {
     private String employee_dev_level;
     private String employee_status;
     private String employee_role;
-    private List<Integer> employee_tech_stack;
 
     public EditEmployee() {
     }
@@ -72,11 +71,4 @@ public class EditEmployee {
         this.employee_role = employee_role;
     }
 
-    public List<Integer> getEmployee_tech_stack() {
-        return employee_tech_stack;
-    }
-
-    public void setEmployee_tech_stack(List<Integer> employee_tech_stack) {
-        this.employee_tech_stack = employee_tech_stack;
-    }
 }

@@ -44,8 +44,6 @@ class EmployeeController implements EmployeeDAO{
         request.put("employee_address",requestData.getEmployee_address());
         request.put("employee_dev_level",requestData.getEmployee_dev_level());
         request.put("employee_gender",requestData.getEmployee_gender());
-        request.put("employee_status",requestData.getEmployee_status());
-        request.put("employee_tech_stack",requestData.getEmployee_tech_stack());
 
         try{
 
@@ -65,7 +63,7 @@ class EmployeeController implements EmployeeDAO{
                     String employee_dev_level = requestData.getEmployee_dev_level();
                     String employee_gender = requestData.getEmployee_gender();
                     String employee_role = requestData.getEmployee_role();
-                    String employee_status = requestData.getEmployee_status();
+                    String employee_status = "Active";
 
                     SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate).withTableName("employee").usingGeneratedKeyColumns("employee_id");
 
@@ -83,23 +81,10 @@ class EmployeeController implements EmployeeDAO{
                     parameters.put("employee_gender",employee_gender.toUpperCase());
 
                     Number key = insertActor.executeAndReturnKey(parameters);
-                    Long employee_key = key.longValue();
                     if (key != null){
-
-                        List<Integer> employee_tech_stack = requestData.getEmployee_tech_stack();
-                        for(Integer tech: employee_tech_stack){
-                            jdbcTemplate.update(
-                                    "insert into employeetech(tech_id,employee_id) values(?,?)",
-                                    new Object[]{
-                                            tech,
-                                            employee_key
-                                    }
-                            );
-                        }
                         response.put("code","00");
                         response.put("msg","New employee added successfully");
                     }else {
-                        this.deleteEmployeeRow(employee_key);
                         response.put("code","01");
                         response.put("msg","Failed to add new employee, try again later");
                     }
@@ -115,36 +100,21 @@ class EmployeeController implements EmployeeDAO{
         }
         return response;
     }
-    @ApiOperation("List of Employee Profile")
+    @ApiOperation("List of Employee")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/employees")
     @Override
     public Map<String, Object> getAllEmployeeProfile(){
-        List<SingleProfileTO> result = new ArrayList<>();
+
         Map<String, Object> response = new HashMap<>();
         try{
             List<Employee> employeeTOList =  jdbcTemplate.query(
                     "select * from employee",
                     BeanPropertyRowMapper.newInstance(Employee.class)
             );
-
-            for (Employee employee: employeeTOList){
-                List<EmployeeProject> projectTOS =  jdbcTemplate.query(
-                        "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
-                        new Object[]{employee.getEmployee_id()},
-                        BeanPropertyRowMapper.newInstance(EmployeeProject.class)
-                );
-                List<Tech> techStack =  jdbcTemplate.query(
-
-                        "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
-                        new Object[]{employee.getEmployee_id()},
-                        BeanPropertyRowMapper.newInstance(Tech.class)
-                );
-                result.add(this.SingleProfileTOrowMappper(employee,projectTOS, techStack));
-            }
             response.put("code","00");
             response.put("msg","Data retrieved successfully");
-            response.put("data",result);
+            response.put("data",employeeTOList);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -154,12 +124,11 @@ class EmployeeController implements EmployeeDAO{
         return response;
     }
 
-    @ApiOperation("Get Employee Profile By Id")
+    @ApiOperation("Get Employee By Id")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/employee/{id}")
     @Override
-    public Map<String, Object> getEmployeeProfileById(@PathVariable("id") Integer id){
-        List<SingleProfileTO> result = new ArrayList<>();
+    public Map<String, Object> getEmployeeById(@PathVariable("id") Integer id){
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
         request.put("id",id);
@@ -177,23 +146,10 @@ class EmployeeController implements EmployeeDAO{
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
 
-
                 if (!employee.isEmpty()){
-
-                    List<EmployeeProject> projectTOS = jdbcTemplate.query(
-                            "select * from project inner join assignedproject on project.project_id = assignedproject.project_id inner join employee on assignedproject.employee_id = employee.employee_id where employee.employee_id = ? ",
-                            new Object[]{id},
-                            BeanPropertyRowMapper.newInstance(EmployeeProject.class)
-                    );
-                    List<Tech> techStack = jdbcTemplate.query(
-
-                            "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
-                            new Object[]{id},
-                            BeanPropertyRowMapper.newInstance(Tech.class)
-                    );
                     response.put("code","00");
                     response.put("msg","Data retrieved successfully");
-                    response.put("data",this.SingleProfileTOrowMappper(employee.get(0),projectTOS, techStack));
+                    response.put("data",employee.get(0));
                 }else {
                     response.put("code","00");
                     response.put("msg","No Data found");
@@ -216,7 +172,7 @@ class EmployeeController implements EmployeeDAO{
     @PutMapping("/v1/api/employee")
     @Override
     public Map<String, Object> updateEmployeeProfile(@RequestBody EditEmployee editEmployee){
-        List<SingleProfileTO> result = new ArrayList<>();
+
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
         request.put("employee_id",editEmployee.getEmployee_id());
@@ -226,7 +182,6 @@ class EmployeeController implements EmployeeDAO{
         request.put("employee_address",editEmployee.getEmployee_address());
         request.put("employee_dev_level",editEmployee.getEmployee_dev_level());
         request.put("employee_status",editEmployee.getEmployee_status());
-        request.put("employee_tech_stack",editEmployee.getEmployee_tech_stack());
 
         try{
             List<String> requiredParams = Arrays.asList(
@@ -237,7 +192,7 @@ class EmployeeController implements EmployeeDAO{
                 Map<String, Object> updated_params = this.check_updated_params(editEmployee);
                 if (updated_params.get("code").equals("00")){
                     UpdateEmployee updateEmployee = (UpdateEmployee) updated_params.get("data");
-                    jdbcTemplate.update(
+                    int resp = jdbcTemplate.update(
                             "update employee set employee_firstname = ?, employee_lastname = ?, employee_address = ?,employee_dev_level = ?,employee_status = ?,employee_role = ?  where employee_id = ?",
                             new Object[]{
                                     updateEmployee.getEmployee_firstname(),
@@ -249,31 +204,16 @@ class EmployeeController implements EmployeeDAO{
                                     editEmployee.getEmployee_id()
                             }
                     );
-                    List<Integer> user_current_tech = updateEmployee.getEmployee_tech_stack();
-
-                    jdbcTemplate.update(
-                            "delete from employeetech where employee_id = ?",
-                            new Object[]{
-                                    editEmployee.getEmployee_id()
-                            }
-                    );
-
-                    for(Integer tech: user_current_tech){
-                        jdbcTemplate.update(
-                                "insert into employeetech(tech_id,employee_id) values(?,?)",
-                                new Object[]{
-                                        tech,
-                                        editEmployee.getEmployee_id()
-                                }
-                        );
+                    if (resp > 0){
+                        response.put("code","00");
+                        response.put("msg","Employee updated successfully");
+                    }else {
+                        response.put("code","01");
+                        response.put("msg","Failed to update employee details");
                     }
-
-                    response.put("code","00");
-                    response.put("msg","Employee updated successfully");
-
                 }else {
-                    response.put("code",valid.get("code"));
-                    response.put("msg",valid.get("msg"));
+                    response.put("code",updated_params.get("code"));
+                    response.put("msg",updated_params.get("msg"));
                 }
             }else {
                 response.put("code",valid.get("code"));
@@ -297,16 +237,6 @@ class EmployeeController implements EmployeeDAO{
                     new Object[]{employee_id},
                     BeanPropertyRowMapper.newInstance(Employee.class)
             );
-            List<Tech> techStack = jdbcTemplate.query(
-
-                    "select * from tech inner join employeetech on tech.tech_id = employeetech.tech_id inner join employee on employeetech.employee_id = employee.employee_id where employee.employee_id = ? ",
-                    new Object[]{employee_id},
-                    BeanPropertyRowMapper.newInstance(Tech.class)
-            );
-            List<Integer> techs = techStack.stream()
-                    .map(tech -> tech.getTech_id())
-                    .collect(Collectors.toList());
-
             if (!employee.isEmpty()){
                 Employee employeeData = employee.get(0);
                 if(editEmployee.getEmployee_firstname().isEmpty()){
@@ -339,11 +269,7 @@ class EmployeeController implements EmployeeDAO{
                 }else {
                     updateEmployee.setEmployee_role(editEmployee.getEmployee_role());
                 }
-                if(editEmployee.getEmployee_tech_stack().isEmpty()){
-                    updateEmployee.setEmployee_tech_stack(techs);
-                }else {
-                    updateEmployee.setEmployee_tech_stack(editEmployee.getEmployee_tech_stack());
-                }
+
                 response.put("code","00");
                 response.put("msg","Data retrieved successfully");
                 response.put("data",updateEmployee);
@@ -357,41 +283,9 @@ class EmployeeController implements EmployeeDAO{
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
         }
-
         return response;
     }
 
-    private Map<String, Object> getTechStacksByIDs(List<Integer> techIDs){
-        Map<String, Object> response = new HashMap<>();
-        List<Tech> techList = new ArrayList<>();
-        try {
-            for (Integer tech_id: techIDs){
-                List<Tech> techRow =  jdbcTemplate.query(
-
-                        "select * from tech where tech_id = ?",
-                        new Object[]{tech_id},
-                        BeanPropertyRowMapper.newInstance(Tech.class)
-                );
-                techList.add(techRow.get(0));
-            }
-            response.put("code","00");
-            response.put("msg","Data retrieved successfully");
-            response.put("data",techList);
-        }catch (Exception e){
-            e.printStackTrace();
-            response.put("code","02");
-            response.put("msg","Something went wrong, try again later");
-        }
-        return response;
-    }
-
-    private SingleProfileTO SingleProfileTOrowMappper(Employee employee, List<EmployeeProject> projectTOS, List<Tech> techStack ) throws SQLException {
-        SingleProfileTO singleProfileTO = new SingleProfileTO();
-        singleProfileTO.setEmployee(employee);
-        singleProfileTO.setProjects(projectTOS);
-        singleProfileTO.setTech_stack(techStack);
-        return singleProfileTO;
-    }
     private Boolean checkExistingEmployee(String email){
         Boolean response = null;
 
@@ -410,13 +304,5 @@ class EmployeeController implements EmployeeDAO{
             e.printStackTrace();
         }
         return response;
-    }
-
-    private void deleteEmployeeRow(Long id){
-        String sql = "delete from employee where employee_id = ? ";
-        jdbcTemplate.update(
-                sql,
-                new Object[]{id}
-        );
     }
 }

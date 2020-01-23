@@ -18,10 +18,10 @@ public interface EmployeeDAO {
     @GetMapping("/v1/api/employees")
     Map<String, Object> getAllEmployeeProfile();
 
-    @ApiOperation("Get Employee Profile By Id")
+    @ApiOperation("Get Employee By Id")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/employee/{id}")
-    Map<String, Object> getEmployeeProfileById(@PathVariable("id") Integer id);
+    Map<String, Object> getEmployeeById(@PathVariable("id") Integer id);
 
     @ApiOperation("Edit Employee Profile")
     @CrossOrigin(origins = "*")

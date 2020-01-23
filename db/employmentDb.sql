@@ -1,5 +1,4 @@
 
-
 CREATE TABLE employee (
 
 	employee_id serial primary key,
@@ -16,41 +15,6 @@ CREATE TABLE employee (
 	employee_status text not null
 );
 
-CREATE TABLE project (
 
-	project_id serial primary key,
-	project_name text not null,
-	project_description text not null,
-	project_start_date DATE not null,
-	project_end_date DATE not null
-);
-
-CREATE TABLE tech (
-
-	tech_id serial primary key,
-	tech_name text not null,
-	tech_status text not null
-);
-
-CREATE TABLE assignedproject (
-
-	assignedproject_id serial primary key,
-	employee_id INTEGER,
-	project_id INTEGER,
-	isworkingon BOOLEAN not null
-);
-
-CREATE TABLE techproject (
-
-	techproject_id serial primary key,
-	tech_id INTEGER,
-	project_id INTEGER
-);
-
-CREATE TABLE employeetech (
-	techproject_id serial primary key,
-	tech_id INTEGER,
-	employee_id INTEGER
-);
 
 
