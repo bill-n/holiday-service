@@ -159,7 +159,7 @@ public class LoggedController implements LoggedDAO {
 
     }
 
-    @ApiOperation(" get ALL Logged ")
+    @ApiOperation(" get ALL Logged Hour")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/v1/api/getlogged")
     @Override
