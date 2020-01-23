@@ -16,7 +16,7 @@ public interface EmployeeDAO {
     @ApiOperation("List of Employee Profile")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/employees")
-    Map<String, Object> getAllEmployeeProfile();
+    Map<String, Object> getAllEmployee();
 
     @ApiOperation("Get Employee By Id")
     @CrossOrigin(origins = "*")

@@ -104,7 +104,7 @@ class EmployeeController implements EmployeeDAO{
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/employees")
     @Override
-    public Map<String, Object> getAllEmployeeProfile(){
+    public Map<String, Object> getAllEmployee(){
 
         Map<String, Object> response = new HashMap<>();
         try{
