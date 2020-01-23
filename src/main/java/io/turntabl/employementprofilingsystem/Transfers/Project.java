@@ -9,7 +9,6 @@ public class Project {
     private Integer project_id;
     private String project_name;
     private String project_description;
-    private String project_status;
     private java.sql.Date project_start_date;
     private java.sql.Date project_end_date;
 
@@ -38,14 +37,6 @@ public class Project {
 
     public void setProject_description(String project_description) {
         this.project_description = project_description;
-    }
-
-    public String getProject_status() {
-        return project_status;
-    }
-
-    public void setProject_status(String project_status) {
-        this.project_status = project_status;
     }
 
     public Date getProject_start_date() {

@@ -1,19 +1,52 @@
 package io.turntabl.employementprofilingsystem.DAO;
 
-import com.google.gson.JsonObject;
+import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Models.AddProject;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import io.turntabl.employementprofilingsystem.Models.EditProject;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-
 public interface ProjectDAO {
-    public Map<String, Object> addProject(@RequestBody AddProject requestData);
-    public Map<String, Object> getAllProjects();
-    public Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
-    public Map<String, Object> getProjectById(@PathVariable("id") Integer id);
-    public Map<String, Object> activateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id);
-    public Map<String, Object> deActivateEmployeeProjects(@PathVariable("project_id") Integer project_id,@PathVariable("employee_id") Integer employee_id);
+    @ApiOperation("Add New Project")
+    @CrossOrigin(origins = "*")
+    @PostMapping("/v1/api/project")
+    Map<String, Object> addProject(@RequestBody AddProject requestData);
+
+    @ApiOperation("List of Projects")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/projects")
+    Map<String, Object> getAllProjects();
+
+    @ApiOperation("Get Project By Id")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{id}")
+    Map<String, Object> getProjectById(@PathVariable("id") Integer id);
+
+    @ApiOperation("Assign Project to Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/assign/employee/{employee_id}")
+    Map<String, Object> assignedProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+
+    @ApiOperation("Activate Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/active/employee/{employee_id}")
+    Map<String, Object> activateEmployeeProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+
+    @ApiOperation("Deactivate Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/deactive/employee/{employee_id}")
+    Map<String, Object> deActivateEmployeeProjects(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+
+    @ApiOperation("Edit Project Details")
+    @CrossOrigin(origins = "*")
+    @PutMapping("/v1/api/project")
+    Map<String, Object> updateProjectDetails(@RequestBody EditProject editProject);
+
+    @ApiOperation("Remove Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/remove/employee/{employee_id}")
+    public Map<String, Object> removeProject(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+
+    void deleteProjectRow(Long id);
 }

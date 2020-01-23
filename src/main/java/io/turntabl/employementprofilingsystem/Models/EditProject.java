@@ -9,7 +9,6 @@ public class EditProject {
     private String project_description;
     private String project_start_date;
     private String project_end_date;
-    private String project_status;
     private List<Integer> project_tech_stack;
 
     public EditProject() {
@@ -23,13 +22,6 @@ public class EditProject {
         this.project_id = project_id;
     }
 
-    public String getProject_status() {
-        return project_status;
-    }
-
-    public void setProject_status(String project_status) {
-        this.project_status = project_status;
-    }
 
     public String getProject_name() {
         return project_name;

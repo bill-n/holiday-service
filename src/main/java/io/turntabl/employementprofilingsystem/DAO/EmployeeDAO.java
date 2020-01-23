@@ -1,17 +1,30 @@
 package io.turntabl.employementprofilingsystem.DAO;
 
+import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Models.AddEmployee;
 import io.turntabl.employementprofilingsystem.Models.EditEmployee;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-
 public interface EmployeeDAO {
-    public Map<String,Object> addEmployee( AddEmployee requestData);
-    public Map<String, Object> getAllEmployeeProfile();
-    public Map<String, Object> getEmployeeProfileById(@PathVariable("id") Integer id);
-    public Map<String, Object> updateEmployeeProfile(@RequestBody EditEmployee editEmployee);
+    @ApiOperation("Add New Employee")
+    @CrossOrigin(origins = "*")
+    @PostMapping("/v1/api/employee")
+    Map<String, Object> addEmployee(@RequestBody AddEmployee requestData);
+
+    @ApiOperation("List of Employee Profile")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/employees")
+    Map<String, Object> getAllEmployeeProfile();
+
+    @ApiOperation("Get Employee Profile By Id")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/employee/{id}")
+    Map<String, Object> getEmployeeProfileById(@PathVariable("id") Integer id);
+
+    @ApiOperation("Edit Employee Profile")
+    @CrossOrigin(origins = "*")
+    @PutMapping("/v1/api/employee")
+    Map<String, Object> updateEmployeeProfile(@RequestBody EditEmployee editEmployee);
 }
