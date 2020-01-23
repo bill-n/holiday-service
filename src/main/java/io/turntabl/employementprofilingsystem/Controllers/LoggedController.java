@@ -161,7 +161,7 @@ public class LoggedController implements LoggedDAO {
 
     @ApiOperation(" get ALL Logged Hour")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping(value = "/v1/api/getlogged")
+    @GetMapping(value = "/v1/api/getlogged/{end_date}")
     @Override
     public Map<String, Object>  getAllLogged(@RequestParam("end_date") Date endDate) {
         Map<String, Object> response = new HashMap<>();
