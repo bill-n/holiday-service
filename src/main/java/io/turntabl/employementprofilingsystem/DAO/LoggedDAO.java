@@ -34,6 +34,6 @@ public interface LoggedDAO {
 
 
   // List<LoggedTO>
-    Map<String, Object> getAllLogged( java.sql.Date startDate, java.sql.Date endDate);
+    Map<String, Object> getAllLogged(java.sql.Date endDate);
 }
 

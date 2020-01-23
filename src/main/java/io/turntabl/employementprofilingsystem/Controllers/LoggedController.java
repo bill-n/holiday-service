@@ -163,12 +163,12 @@ public class LoggedController implements LoggedDAO {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/v1/api/getlogged")
     @Override
-    public Map<String, Object>  getAllLogged(@RequestParam("start_date") Date startDate, @RequestParam("end_date") Date endDate) {
+    public Map<String, Object>  getAllLogged(@RequestParam("end_date") Date endDate) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            List<LoggedTO> log = jdbcTemplate.query("select * from LoggedChart(?::date,?::date)",
-                    new Object[]{startDate, endDate},
+            List<LoggedTO> log = jdbcTemplate.query("select * from LoggedChart(?::date)",
+                    new Object[]{endDate},
                     BeanPropertyRowMapper.newInstance(LoggedTO.class));
 
             response.put("code","00");
