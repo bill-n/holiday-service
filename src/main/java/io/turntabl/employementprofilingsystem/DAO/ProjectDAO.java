@@ -43,5 +43,10 @@ public interface ProjectDAO {
     @PutMapping("/v1/api/project")
     Map<String, Object> updateProjectDetails(@RequestBody EditProject editProject);
 
+    @ApiOperation("Remove Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/remove/employee/{employee_id}")
+    public Map<String, Object> removeProject(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id);
+
     void deleteProjectRow(Long id);
 }

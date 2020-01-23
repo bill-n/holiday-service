@@ -238,6 +238,65 @@ public class ProjectController implements ProjectDAO {
         }
         return response;
     }
+    @ApiOperation("Remove Project on Employee")
+    @CrossOrigin(origins = "*")
+    @GetMapping("/v1/api/project/{project_id}/remove/employee/{employee_id}")
+    @Override
+    public Map<String, Object> removeProject(@PathVariable("project_id") Integer project_id, @PathVariable("employee_id") Integer employee_id){
+
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> request = new HashMap<>();
+        request.put("project_id",project_id);
+        request.put("employee_id",employee_id);
+        try{
+            List<String> requiredParams = Arrays.asList(
+                    "project_id",
+                    "employee_id"
+            );
+            Map<String, Object> result = parsor.validate_params(request,requiredParams);
+            if (result.get("code").equals("00")){
+                List<AssignedProjectTable> assignedProjectTables =  jdbcTemplate.query(
+                        "select * from assignedproject where employee_id = ?",
+                        new Object[]{employee_id},
+                        BeanPropertyRowMapper.newInstance(AssignedProjectTable.class)
+                );
+                List<Integer> existingAssgnProjects = new ArrayList<>();
+                for(AssignedProjectTable assignedProjectTable :assignedProjectTables){
+                    if (assignedProjectTable.getProject_id().equals(project_id)){
+                        existingAssgnProjects.add(assignedProjectTable.getProject_id());
+                    }
+                }
+                if (!existingAssgnProjects.isEmpty()){
+
+                    int resp = jdbcTemplate.update(
+                            "delete from assignedproject where employee_id = ? and project_id = ? ",
+                            new Object[]{
+                                    employee_id,
+                                    project_id
+                            }
+                    );
+                    if(resp > 0){
+                        response.put("code","00");
+                        response.put("msg","Project removed on employee successfully");
+                    }else {
+                        response.put("code","01");
+                        response.put("msg","Failed to remove project on employee");
+                    }
+                }else{
+                    response.put("code","01");
+                    response.put("msg","Employee has not yet been assigned to this project");
+                }
+            }else {
+                response.put("code",result.get("code"));
+                response.put("msg",result.get("msg"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.put("code","02");
+            response.put("msg","Something went wrong, try again later");
+        }
+        return response;
+    }
 
     @ApiOperation("Get Assigned Projects By Employee Id")
     @CrossOrigin(origins = "*")
