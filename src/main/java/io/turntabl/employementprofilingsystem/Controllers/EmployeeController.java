@@ -84,6 +84,7 @@ class EmployeeController implements EmployeeDAO{
                     if (key != null){
                         response.put("code","00");
                         response.put("msg","New employee added successfully");
+                        response.put("data",key.longValue());
                     }else {
                         response.put("code","01");
                         response.put("msg","Failed to add new employee, try again later");

@@ -15,6 +15,17 @@ CREATE TABLE employee (
 	employee_status text not null
 );
 
+CREATE TABLE assignproject (
+
+    assignproject_id serial primary key,
+	employee_id INTEGER,
+	project_id INTEGER,
+	employee_firstName text ,
+	employee_lastName text ,
+	employee_email text
+
+);
+
 
 
 
