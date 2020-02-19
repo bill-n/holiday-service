@@ -34,6 +34,11 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	compile  'com.google.code.gson:gson:2.8.5'
 	compile group: 'org.json', name: 'json', version: '20090211'
+	compile 'com.google.api-client:google-api-client:1.23.0'
+	compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+	compile 'com.google.apis:google-api-services-gmail:v1-rev83-1.23.0'
+	compile group: 'javax.mail', name: 'mail', version: '1.4'
+	compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }
 
 test {
