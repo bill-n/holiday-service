@@ -1,6 +1,5 @@
 
 CREATE TABLE employee (
-
 	employee_id serial primary key,
 	employee_firstName text not null,
 	employee_lastName text not null,
