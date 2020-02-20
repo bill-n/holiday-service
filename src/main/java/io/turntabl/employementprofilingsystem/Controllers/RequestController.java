@@ -2,7 +2,7 @@ package io.turntabl.employementprofilingsystem.Controllers;
 
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Gmail.Email;
-import io.turntabl.employementprofilingsystem.Models.RequestTO;
+import io.turntabl.employementprofilingsystem.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,15 +26,15 @@ public class RequestController {
     @ApiOperation("Make a request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
-        jdbcTemplate.update("insert into requests(requester_id, requester_start_date, requester_end_date, requester_reason) values(?,?,?,?)",
-                request.getRequester_id(), request.getRequester_start_date(), request.getRequester_end_date(), request.getRequester_reason());
+        jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
+                request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
 
 //        request.getRequester_start_date() = new Date();
 
-       //String formatDate = DateFormat.getDateInstance().format(request.getRequester_start_date());
+       //String formatDate = DateFormat.getDateInstance().format(request.getRequest_start_date());
          SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-         String startDate = DateFor.format(request.getRequester_start_date());
-         String endDate = DateFor.format(request.getRequester_end_date());
+         String startDate = DateFor.format(request.getRequest_start_date());
+         String endDate = DateFor.format(request.getRequest_report_date());
 
 
         try {
