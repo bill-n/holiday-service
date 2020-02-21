@@ -1,4 +1,3 @@
-
 CREATE TABLE employee (
 	employee_id serial primary key,
 	employee_firstName text not null,
@@ -15,44 +14,33 @@ CREATE TABLE employee (
 );
 
 CREATE TABLE assignproject (
-
     assignproject_id serial primary key,
 	employee_id INTEGER,
 	project_id INTEGER,
 	employee_firstName text ,
 	employee_lastName text ,
 	employee_email text
-
 );
 
-
-
-
-
-
 create table LoggedProject (
-
 	project_date DATE,
 	emp_id int references employees (emp_id),
 	project_id int references projects (project_id),
 	project_hours int,
 	primary key (project_date,project_id)
-	);
+);
 
 create table LoggedSick (
-
 	sick_date DATE,
 	emp_id int references employees(emp_id),
 	primary key(sick_date, emp_id)
 );
 
 create table LoggedVacation (
-
 	vacation_date DATE,
 	emp_id int references employees (emp_id),
 	primary key (vacation_date, emp_id)
 );
-
 
 CREATE OR REPLACE FUNCTION loggedChart (startdate DATE, enddate DATE)
 RETURNS TABLE (
@@ -72,6 +60,5 @@ BEGIN
  		union
 	select vacation_date,'vacation' as project_name, sum(8) from loggedVacation group by vacation_date)
  		AS foo where project_date between startdate and enddate;
-
 END;
 $$;
