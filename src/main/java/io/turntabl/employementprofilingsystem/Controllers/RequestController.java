@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import io.turntabl.employementprofilingsystem.Gmail.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -26,13 +29,12 @@ public class RequestController {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
                 request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
 
-        SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-        String startDate = DateFor.format(request.getRequest_start_date());
-        String reportDate = DateFor.format(request.getRequest_report_date());
-
+         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+         String startDate = DateFor.format(request.getRequest_start_date());
+         String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, endDate, request.getRequester_name());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
@@ -61,3 +63,4 @@ public class RequestController {
     }
 
 }
+
