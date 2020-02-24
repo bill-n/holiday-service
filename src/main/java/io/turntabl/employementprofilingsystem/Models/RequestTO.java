@@ -1,6 +1,6 @@
 package io.turntabl.employementprofilingsystem.Models;
 
-        import java.util.Date;
+import java.util.Date;
 
 public class RequestTO {
     private int request_id;

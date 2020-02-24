@@ -27,13 +27,10 @@ public class RequestController {
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
         jdbcTemplate.update("insert into requests(requester_id, requester_start_date, requester_end_date, requester_reason) values(?,?,?,?)",
-                request.getRequester_id(), request.getRequester_start_date(), request.getRequester_end_date(), request.getRequester_reason());
-
-         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-         String startDate = DateFor.format(request.getRequester_start_date());
-         String endDate = DateFor.format(request.getRequester_end_date());
-
-
+                 request.getRequester_id(), request.getRequester_start_date(), request.getRequester_end_date(), request.getRequester_reason());
+                 SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+                 String startDate = DateFor.format(request.getRequest_start_date());
+                 String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
             Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, endDate, request.getRequester_name());
@@ -64,7 +61,6 @@ public class RequestController {
         );
     }
 
-<<<<<<< HEAD
     @CrossOrigin
     @ApiOperation("Approve a Request")
     @PutMapping("/api/v1/Approve")
@@ -75,6 +71,4 @@ public class RequestController {
 
     }
 }
-=======
-}
->>>>>>> parent of ccdf2bc... endpoints for approve and decline
+
