@@ -1,7 +1,5 @@
 package io.turntabl.employementprofilingsystem.Models;
 
-import java.util.List;
-
 public class AddEmployee {
     private String employee_firstname;
     private String employee_lastname;
@@ -11,7 +9,6 @@ public class AddEmployee {
     private String employee_dev_level;
     private String employee_gender;
     private String employee_role;
-
 
     public AddEmployee() {
     }

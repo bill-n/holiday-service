@@ -150,3 +150,4 @@ public class Email {
         GmailService.sendMail(from, to, subject, bodyText.toString());
     }
 }
+

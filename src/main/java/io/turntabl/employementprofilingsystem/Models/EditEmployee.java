@@ -1,7 +1,5 @@
 package io.turntabl.employementprofilingsystem.Models;
 
-import java.util.List;
-
 public class EditEmployee {
     private Integer employee_id;
     private String employee_firstname;
@@ -38,7 +36,6 @@ public class EditEmployee {
         this.employee_lastname = employee_lastname;
     }
 
-
     public String getEmployee_address() {
         return employee_address;
     }
@@ -70,5 +67,4 @@ public class EditEmployee {
     public void setEmployee_role(String employee_role) {
         this.employee_role = employee_role;
     }
-
 }

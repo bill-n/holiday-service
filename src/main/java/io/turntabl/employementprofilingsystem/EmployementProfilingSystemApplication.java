@@ -1,16 +1,12 @@
 package io.turntabl.employementprofilingsystem;
 
-import io.turntabl.employementprofilingsystem.Gmail.Email;
-import io.turntabl.employementprofilingsystem.Gmail.GmailService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
 
 @ComponentScan(basePackages = "io.turntabl.*")
 @EnableSwagger2
@@ -21,11 +17,6 @@ public class EmployementProfilingSystemApplication {
 	public static void main(String[] args) throws GeneralSecurityException, IOException {
 
 		SpringApplication.run(EmployementProfilingSystemApplication.class, args);
-//		try {
-//			Email.requestMessage("isaac.agyen@turntabl.io", "dawud.ismail@turntabl.io", "Holiday request");
-//		} catch (IOException | GeneralSecurityException e) {
-//			e.printStackTrace();
-//		}
 	}
 
 }

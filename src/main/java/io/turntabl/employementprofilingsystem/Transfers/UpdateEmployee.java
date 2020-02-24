@@ -1,7 +1,5 @@
 package io.turntabl.employementprofilingsystem.Transfers;
 
-import java.util.List;
-
 public class UpdateEmployee {
     private String employee_firstname;
     private String employee_lastname;
@@ -12,7 +10,6 @@ public class UpdateEmployee {
     private String employee_gender;
     private String employee_status;
     private String employee_role;
-
 
     public UpdateEmployee() {
     }
