@@ -26,11 +26,12 @@ public class RequestController {
     @ApiOperation("Make a request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
-        jdbcTemplate.update("insert into requests(requester_id, requester_start_date, requester_end_date, requester_reason) values(?,?,?,?)",
-                 request.getRequester_id(), request.getRequester_start_date(), request.getRequester_end_date(), request.getRequester_reason());
-                 SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-                 String startDate = DateFor.format(request.getRequest_start_date());
-                 String reportDate = DateFor.format(request.getRequest_report_date());
+        jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
+                request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
+
+         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+         String startDate = DateFor.format(request.getRequest_start_date());
+         String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
             Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, endDate, request.getRequester_name());
@@ -61,14 +62,5 @@ public class RequestController {
         );
     }
 
-    @CrossOrigin
-    @ApiOperation("Approve a Request")
-    @PutMapping("/api/v1/Approve")
-    public List<RequestTO> approveARequest() {
-        return this.jdbcTemplate.query("update requests set request_status_id = 2 where requester_id =?",
-                new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
-        );
-
-    }
 }
 
