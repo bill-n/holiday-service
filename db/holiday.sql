@@ -24,7 +24,4 @@ CREATE TABLE requests(
     request_status_id int references request_status(request_status_id) NOT NULL default 1
 );
 
-INSERT INTO request_status(req_status) VALUES ('PENDING');
-INSERT INTO request_status(req_status) VALUES ('DECLINED');
-INSERT INTO request_status(req_status) VALUES ('APPROVED');
 
