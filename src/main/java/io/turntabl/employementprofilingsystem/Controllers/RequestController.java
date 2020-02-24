@@ -31,14 +31,14 @@ public class RequestController {
 
 //        request.getRequester_start_date() = new Date();
 
-       //String formatDate = DateFormat.getDateInstance().format(request.getRequester_start_date());
-         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-         String startDate = DateFor.format(request.getRequester_start_date());
-         String endDate = DateFor.format(request.getRequester_end_date());
+        //String formatDate = DateFormat.getDateInstance().format(request.getRequester_start_date());
+        SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+        String startDate = DateFor.format(request.getRequester_start_date());
+        String endDate = DateFor.format(request.getRequester_end_date());
 
 
         try {
-            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, endDate, request.getRequester_name());
+            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom(), "Holiday request", startDate, endDate, request.getRequester_name());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
@@ -49,7 +49,7 @@ public class RequestController {
     @CrossOrigin
     @ApiOperation("Get all requests for requester")
     @GetMapping("/api/v1/request/requester/{id}")
-    public List<RequestTO> getRequestByRequesterId(@PathVariable("id") Integer id){
+    public List<RequestTO> getRequestByRequesterId(@PathVariable("id") Integer id) {
         return this.jdbcTemplate.query(
                 "select * from requests where requester_id = ?",
                 new Object[]{id},
@@ -60,10 +60,19 @@ public class RequestController {
     @CrossOrigin
     @ApiOperation("Get all requests")
     @GetMapping("/api/v1/requests")
-    public  List<RequestTO> getAllRequests(){
+    public List<RequestTO> getAllRequests() {
         return this.jdbcTemplate.query("select * from requests",
                 new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
         );
     }
 
+    @CrossOrigin
+    @ApiOperation("Approve a Request")
+    @PutMapping("/api/v1/Approve")
+    public List<RequestTO> approveARequest() {
+        return this.jdbcTemplate.query("update requests set request_status_id = 2 where requester_id =?",
+                new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
+        );
+
+    }
 }
