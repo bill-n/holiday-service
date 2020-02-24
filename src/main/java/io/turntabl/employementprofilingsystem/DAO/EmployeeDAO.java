@@ -1,3 +1,7 @@
+//package io.turntabl.employementprofilingsystem.DAO;
+//
+//public interface EmployeeDAO {
+//}
 package io.turntabl.employementprofilingsystem.DAO;
 
 import io.swagger.annotations.ApiOperation;

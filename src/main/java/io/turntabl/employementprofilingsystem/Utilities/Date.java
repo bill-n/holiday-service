@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 
 @Component
 public class Date {
-    public java.sql.Date getCurrentDate (){
+    public java.sql.Date getCurrentDate(){
         long millis=System.currentTimeMillis();
         java.sql.Date date=new java.sql.Date(millis);
         return date;

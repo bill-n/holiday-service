@@ -7,8 +7,9 @@ import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 import io.turntabl.employementprofilingsystem.Models.AddEmployee;
 import io.turntabl.employementprofilingsystem.Models.EditEmployee;
 import io.turntabl.employementprofilingsystem.Transfers.*;
+import io.turntabl.employementprofilingsystem.Utilities.*;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
-import io.turntabl.employementprofilingsystem.Utilities.Parsor;
+//import io.turntabl.employementprofilingsystem.Utilities.Parsor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Api
 @RestController
-class EmployeeController implements EmployeeDAO{
+class EmployeeController implements EmployeeDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -150,7 +151,7 @@ class EmployeeController implements EmployeeDAO{
                 if (!employee.isEmpty()){
                     response.put("code","00");
                     response.put("msg","Data retrieved successfully");
-                    response.put("data",employee.get(0));
+                    response.put("data", employee.get(0));
                 }else {
                     response.put("code","00");
                     response.put("msg","No Data found");

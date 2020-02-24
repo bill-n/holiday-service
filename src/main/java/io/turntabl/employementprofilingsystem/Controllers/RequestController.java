@@ -34,7 +34,7 @@ public class RequestController {
          String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, endDate, request.getRequester_name());
+            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
