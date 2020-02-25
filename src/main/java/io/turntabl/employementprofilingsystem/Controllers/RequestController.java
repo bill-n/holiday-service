@@ -19,7 +19,7 @@ public class RequestController {
     JdbcTemplate jdbcTemplate;
 
     @CrossOrigin
-    @ApiOperation("Make holiday request")
+    @ApiOperation("Make a holiday request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
@@ -39,7 +39,7 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Get all holiday requests by a requester")
+    @ApiOperation("Get all holiday requests for requester")
     @GetMapping("/api/v1/request/requester/{id}")
 
     public List<RequestTO> getRequestByRequesterId(@PathVariable("id") Integer id) {
@@ -63,16 +63,17 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Accept holiday Request")
+    @ApiOperation("Accept holiday request")
     @PutMapping("/api/v1/requests/approve/{id}")
     public void approveRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 3 where request_status_id = 1 and request_id = ?", request_id);
     }
 
     @CrossOrigin
-    @ApiOperation("Decline holiday Request")
+    @ApiOperation("Decline holiday request")
     @PutMapping("/api/v1/requests/decline/{id}")
     public void declineRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 2 where request_status_id = 1 and request_id = ?", request_id);
     }
 }
+
