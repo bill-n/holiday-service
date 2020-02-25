@@ -21,7 +21,7 @@ public class AuthController {
 
     Parsor parsor = new Parsor();
 
-    @ApiOperation("Get Employee By Email")
+    @ApiOperation("Get Employee By HolidayRequestMail")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/login/{employee_email}")
     public Map<String,Object> getEmployeeByEmail(@PathVariable("employee_email") String email) {
