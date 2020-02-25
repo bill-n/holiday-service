@@ -19,7 +19,7 @@ public class RequestController {
     JdbcTemplate jdbcTemplate;
 
     @CrossOrigin
-    @ApiOperation("Make a request")
+    @ApiOperation("Make holiday request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
@@ -39,7 +39,7 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Get all requests for requester")
+    @ApiOperation("Get all holiday requests by a requester")
     @GetMapping("/api/v1/request/requester/{id}")
 
     public List<RequestTO> getRequestByRequesterId(@PathVariable("id") Integer id) {
@@ -52,7 +52,7 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Get all requests")
+    @ApiOperation("Get all holiday requests")
     @GetMapping("/api/v1/requests")
 
     public List<RequestTO> getAllRequests() {
@@ -63,14 +63,14 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Accept Request")
+    @ApiOperation("Accept holiday Request")
     @PutMapping("/api/v1/requests/approve/{id}")
     public void approveRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 3 where request_status_id = 1 and request_id = ?", request_id);
     }
 
     @CrossOrigin
-    @ApiOperation("Decline Request")
+    @ApiOperation("Decline holiday Request")
     @PutMapping("/api/v1/requests/decline/{id}")
     public void declineRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 2 where request_status_id = 1 and request_id = ?", request_id);
