@@ -42,4 +42,6 @@ else
     sudo docker rmi $(docker images -a | grep '<none>' | awk '{print $3}')
     sudo docker-compose build --no-cache
     sudo docker-compose up -d
+
 fi
+

@@ -2,12 +2,15 @@ package io.turntabl.employementprofilingsystem.Controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
 import io.turntabl.employementprofilingsystem.DAO.EmployeeDAO;
 import io.turntabl.employementprofilingsystem.Models.AddEmployee;
 import io.turntabl.employementprofilingsystem.Models.EditEmployee;
+
 import io.turntabl.employementprofilingsystem.Transfers.*;
 import io.turntabl.employementprofilingsystem.Utilities.*;
+
+import io.turntabl.employementprofilingsystem.Transfers.UpdateEmployee;
+
 import io.turntabl.employementprofilingsystem.Utilities.Date;
 //import io.turntabl.employementprofilingsystem.Utilities.Parsor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -28,7 +31,6 @@ class EmployeeController implements EmployeeDAO {
 
     Parsor parsor = new Parsor();
     Date date = new Date();
-
 
     @ApiOperation("Add New Employee")
     @CrossOrigin(origins = "*")
