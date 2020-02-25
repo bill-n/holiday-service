@@ -1,4 +1,4 @@
-package io.turntabl.employementprofilingsystem.Gmail;
+package io.turntabl.employementprofilingsystem.SendingMail;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -10,7 +10,6 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.google.common.collect.ImmutableList;
-
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
@@ -56,7 +55,7 @@ public class GmailService {
                 .setTransport(gcFromJson.getTransport())
                 .setJsonFactory(gcFromJson.getJsonFactory())
                 .setServiceAccountId(gcFromJson.getServiceAccountId())
-                .setServiceAccountUser( "dawud.ismail@turntabl.io")
+                .setServiceAccountUser(System.getenv("ACCOUNT_USER"))
                 .setServiceAccountPrivateKey(gcFromJson.getServiceAccountPrivateKey())
                 .setServiceAccountScopes(gcFromJson.getServiceAccountScopes())
                 .setTokenServerEncodedUrl(gcFromJson.getTokenServerEncodedUrl())
@@ -88,7 +87,7 @@ public class GmailService {
 
         MimeMessage email = new MimeMessage(session);
 
-        email.setFrom(new InternetAddress(  from  ));
+        email.setFrom(new InternetAddress(from));
         email.addRecipient(javax.mail.Message.RecipientType.TO,
                 new InternetAddress(to));
         email.setSubject(subject);

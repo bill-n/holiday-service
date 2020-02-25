@@ -1,7 +1,7 @@
 package io.turntabl.employementprofilingsystem.Controllers;
 
 import io.swagger.annotations.ApiOperation;
-import io.turntabl.employementprofilingsystem.Gmail.Email;
+import io.turntabl.employementprofilingsystem.SendingMail.HolidayRequestMail;
 import io.turntabl.employementprofilingsystem.Models.RequestTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -30,7 +30,7 @@ public class RequestController {
          String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+            HolidayRequestMail.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
