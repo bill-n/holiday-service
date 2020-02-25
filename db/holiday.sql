@@ -6,9 +6,13 @@ DROP TABLE IF EXISTS request_status cascade;
 --- REQUEST STATUS ---
 
 CREATE TABLE request_status(
-    request_status_id serial primary key NOT NULL,
+    request_status_id primary key NOT NULL,
     req_status varchar(10)
 );
+
+INSERT INTO request_status(request_status_id, req_status) VALUES (1, 'PENDING');
+INSERT INTO request_status(request_status_id, req_status) VALUES (2, 'DECLINED');
+INSERT INTO request_status(request_status_id, req_status) VALUES (3, 'APPROVED');
 
 --- REQUESTS TABLE ---
 
