@@ -9,7 +9,7 @@ public class RequestMail{
                 "    <head>\n" +
                 "    <meta name=\"viewport\" content=\"width=device-width\">\n" +
                 "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
-                "    <title>Pollstar</title>\n" +
+                "    <title>holiday request</title>\n" +
                 "    <style>\n" +
                 "    @media only screen and (max-width: 620px) {\n" +
                 "      table[class=body] h1 {\n" +
