@@ -6,7 +6,9 @@ import io.fusionauth.jwt.domain.JWT;
 import io.fusionauth.jwt.rsa.RSAVerifier;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import io.turntabl.employementprofilingsystem.Models.AddEmployee;
+import io.turntabl.employementprofilingsystem.Gmail.Email;
 import io.turntabl.employementprofilingsystem.Models.RequestTO;
 import io.turntabl.employementprofilingsystem.Transfers.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +32,29 @@ public class RequestController {
     JdbcTemplate jdbcTemplate;
 
     @CrossOrigin
-    @ApiOperation("Make a request")
+    @ApiOperation("Make a holiday request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
                 request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
+
+         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+         String startDate = DateFor.format(request.getRequest_start_date());
+         String reportDate = DateFor.format(request.getRequest_report_date());
+
+        try {
+            Email.requestMessage("isaac.agyen@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     @CrossOrigin
-    @ApiOperation("Get all requests for requester")
+    @ApiOperation("Get all holiday requests for requester")
     @GetMapping("/api/v1/request/requester/{id}")
+
     public List<RequestTO> getRequestByRequesterId(@PathVariable("id") Integer id) {
         return this.jdbcTemplate.query(
                 " select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id where requester_id =?",
@@ -49,8 +64,9 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Get all requests")
+    @ApiOperation("Get all holiday requests")
     @GetMapping("/api/v1/requests")
+
     public List<RequestTO> getAllRequests() {
         return this.jdbcTemplate.query("select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id",
                 new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
@@ -58,14 +74,14 @@ public class RequestController {
     }
 
     @CrossOrigin
-    @ApiOperation("Accept Request")
+    @ApiOperation("Accept holiday request")
     @PutMapping("/api/v1/requests/approve/{id}")
     public void approveRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 3 where request_status_id = 1 and request_id = ?", request_id);
     }
 
     @CrossOrigin
-    @ApiOperation("Decline Request")
+    @ApiOperation("Decline holiday request")
     @PutMapping("/api/v1/requests/decline/{id}")
     public void declineRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 2 where request_status_id = 1 and request_id = ?", request_id);
