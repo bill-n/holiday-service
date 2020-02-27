@@ -45,8 +45,7 @@ public class RequestController {
 
     public List<RequestTO> getRequestByRequesterId(@PathVariable("id") Integer id) {
         return this.jdbcTemplate.query(
-                "select select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on " +
-                        "requests.request_status_id = request_status.request_status_id where requester_id = ?",
+                "select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id where requester_id =?",
                 new Object[]{id},
                 new BeanPropertyRowMapper<>(RequestTO.class)
         );
@@ -57,8 +56,7 @@ public class RequestController {
     @GetMapping("/api/v1/requests")
 
     public List<RequestTO> getAllRequests() {
-        return this.jdbcTemplate.query("select select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on" +
-                        "requests.request_status_id = request_status.request_status_id",
+        return this.jdbcTemplate.query(" select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id",
                 new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
         );
     }
