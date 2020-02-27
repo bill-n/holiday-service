@@ -17,6 +17,7 @@ public class EmployementProfilingSystemApplication {
 	public static void main(String[] args) throws GeneralSecurityException, IOException {
 
 		SpringApplication.run(EmployementProfilingSystemApplication.class, args);
+
 	}
 
 }

@@ -10,11 +10,12 @@ public class RequestTO {
     private int request_status_id;
     private String from;
     private String requester_name;
+    private String req_status;
 
     public RequestTO() {
     }
 
-    public RequestTO(int request_id, int requester_id, Date request_start_date, Date request_report_date, int request_status_id, String from, String requester_name) {
+    public RequestTO(int request_id, int requester_id, Date request_start_date, Date request_report_date, int request_status_id, String from, String requester_name, String req_status) {
         this.request_id = request_id;
         this.requester_id = requester_id;
         this.request_start_date = request_start_date;
@@ -22,6 +23,7 @@ public class RequestTO {
         this.request_status_id = request_status_id;
         this.from = from;
         this.requester_name = requester_name;
+        this.req_status = req_status;
     }
 
     public int getRequest_id() {
@@ -80,6 +82,14 @@ public class RequestTO {
         this.requester_name = requester_name;
     }
 
+    public String getReq_status() {
+        return req_status;
+    }
+
+    public void setReq_status(String req_status) {
+        this.req_status = req_status;
+    }
+
     @Override
     public String toString() {
         return "RequestTO{" +
@@ -90,6 +100,7 @@ public class RequestTO {
                 ", request_status_id=" + request_status_id +
                 ", from='" + from + '\'' +
                 ", requester_name='" + requester_name + '\'' +
+                ", req_status='" + req_status + '\'' +
                 '}';
     }
 }
