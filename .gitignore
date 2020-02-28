@@ -21,6 +21,7 @@ build/
 *.ipr
 out/
 public_key.pem
+credentials.json
 
 ### NetBeans ###
 /nbproject/private/
