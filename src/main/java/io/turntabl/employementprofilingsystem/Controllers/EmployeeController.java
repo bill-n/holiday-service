@@ -43,6 +43,7 @@ class EmployeeController implements EmployeeDAO {
     @Override
     public Map<String, Object> addEmployee(@RequestBody AddEmployee requestData) {
         Span span = tracer.buildSpan("Add New Employee").start();
+        span.setTag("htt.method", "POST");
         span.setTag("post_new_employee_request", requestData.toString());
 
         Map<String, Object> response = new HashMap<>();
@@ -164,6 +165,7 @@ class EmployeeController implements EmployeeDAO {
     @Override
     public Map<String, Object> getEmployeeById(@PathVariable("id") Integer id){
         Span rootSpan = tracer.buildSpan("Get Employee by ID").start();
+        rootSpan.setTag("htt.method", "GET");
         rootSpan.setTag("employee_id", id);
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
