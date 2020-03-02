@@ -19,9 +19,11 @@ build/
 *.iws
 *.iml
 *.ipr
-out/
 public_key.pem
 credentials.json
+out/
+
+
 
 ### NetBeans ###
 /nbproject/private/
