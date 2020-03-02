@@ -4,8 +4,8 @@ services:
   holidayrequest:
     build:
       context: .
-#    ports:
-#      - "7070:7070"
+    ports:
+      - "7070:7070"
     environment:
       - JAEGER_SERVICE_NAME=opentelemetryservice
       - JAEGER_AGENT_HOST=jaeger
