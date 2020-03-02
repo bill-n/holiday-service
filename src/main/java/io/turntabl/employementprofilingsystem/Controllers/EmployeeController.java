@@ -206,7 +206,7 @@ class EmployeeController implements EmployeeDAO {
     @PutMapping("/v1/api/employee")
     @Override
     public Map<String, Object> updateEmployeeProfile(@RequestBody EditEmployee editEmployee){
-
+        Span rootSpan = tracer.buildSpan("Update Employee Profile").start();
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
         request.put("employee_id",editEmployee.getEmployee_id());
@@ -216,7 +216,7 @@ class EmployeeController implements EmployeeDAO {
         request.put("employee_address",editEmployee.getEmployee_address());
         request.put("employee_dev_level",editEmployee.getEmployee_dev_level());
         request.put("employee_status",editEmployee.getEmployee_status());
-
+        rootSpan.setTag("Employee to be edited data", request.toString());
         try{
             List<String> requiredParams = Arrays.asList(
                     "employee_id"
@@ -224,6 +224,7 @@ class EmployeeController implements EmployeeDAO {
             Map<String, Object> valid = parsor.validate_params(request,requiredParams);
             if (valid.get("code").equals("00")){
                 Map<String, Object> updated_params = this.check_updated_params(editEmployee);
+                rootSpan.setTag("updated employee params", updated_params.toString());
                 if (updated_params.get("code").equals("00")){
                     UpdateEmployee updateEmployee = (UpdateEmployee) updated_params.get("data");
                     int resp = jdbcTemplate.update(
@@ -238,12 +239,16 @@ class EmployeeController implements EmployeeDAO {
                                     editEmployee.getEmployee_id()
                             }
                     );
+                    rootSpan.setTag("db_jdbc_update_response", resp);
+
                     if (resp > 0){
                         response.put("code","00");
                         response.put("msg","Employee updated successfully");
+                        rootSpan.log("Employee updated successfully :)");
                     }else {
                         response.put("code","01");
                         response.put("msg","Failed to update employee details");
+                        rootSpan.log("Employee update failed :(");
                     }
                 }else {
                     response.put("code",updated_params.get("code"));
@@ -257,7 +262,9 @@ class EmployeeController implements EmployeeDAO {
             e.printStackTrace();
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
+            rootSpan.log("Error occurred updating employee :(");
         }
+        rootSpan.setTag("update_employee_profile_response", response.toString());
         return response;
     }
 
