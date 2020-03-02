@@ -42,6 +42,9 @@ class EmployeeController implements EmployeeDAO {
     @PostMapping("/v1/api/employee")
     @Override
     public Map<String, Object> addEmployee(@RequestBody AddEmployee requestData) {
+        Span span = tracer.buildSpan("Add New Employee").start();
+        span.setTag("post_new_employee_request", requestData.toString());
+
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
         request.put("employee_firstname",requestData.getEmployee_firstname());
@@ -52,7 +55,7 @@ class EmployeeController implements EmployeeDAO {
         request.put("employee_address",requestData.getEmployee_address());
         request.put("employee_dev_level",requestData.getEmployee_dev_level());
         request.put("employee_gender",requestData.getEmployee_gender());
-
+        Span childSpan = null;
         try{
 
             List<String> requiredParams = Arrays.asList(
@@ -60,11 +63,15 @@ class EmployeeController implements EmployeeDAO {
                     "employee_role"
             );
             Map<String, Object> result = parsor.validate_params(request,requiredParams);
+            childSpan = tracer.buildSpan("Parsor Validation Result").asChildOf(span).start();
+            childSpan.setTag("get_post_validation_code", result.toString());
+
             if (result.get("code").equals("00")){
 
                 if (this.checkExistingEmployee(requestData.getEmployee_email())){
                     response.put("code","01");
                     response.put("msg","Employee already exist with the same email");
+                    childSpan.setTag("get_post_employee_status", "Employee Already Exist");
                 }else {
                     java.sql.Date employee_hire_date = date.getCurrentDate();
                     Boolean employee_onleave = false;
@@ -93,10 +100,14 @@ class EmployeeController implements EmployeeDAO {
                         response.put("code","00");
                         response.put("msg","New employee added successfully");
                         response.put("data",key.longValue());
+                        childSpan.setTag("get_post_employee_status", "New Employee Creation Succeeded :)");
+
                     }else {
                         response.put("code","01");
                         response.put("msg","Failed to add new employee, try again later");
+                        childSpan.setTag("get_post_employee_status", "New Employee Creation Failed :(");
                     }
+
                 }
             }else {
                 response.put("code",result.get("code"));
@@ -107,6 +118,9 @@ class EmployeeController implements EmployeeDAO {
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
         }
+        childSpan.setTag("post_employee_response", response.toString());
+        span.finish();
+        childSpan.finish();
         return response;
     }
 
