@@ -163,6 +163,8 @@ class EmployeeController implements EmployeeDAO {
     @GetMapping("/v1/api/employee/{id}")
     @Override
     public Map<String, Object> getEmployeeById(@PathVariable("id") Integer id){
+        Span rootSpan = tracer.buildSpan("Get Employee by ID").start();
+        rootSpan.setTag("employee_id", id);
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
         request.put("id",id);
@@ -179,15 +181,18 @@ class EmployeeController implements EmployeeDAO {
                         new Object[]{id},
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
+                rootSpan.setTag("employee_result", employee.toString());
 
                 if (!employee.isEmpty()){
                     response.put("code","00");
                     response.put("msg","Data retrieved successfully");
                     response.put("data", employee.get(0));
+                    rootSpan.log("Data retrieved successfully");
                 }else {
                     response.put("code","00");
                     response.put("msg","No Data found");
                     response.put("data",new HashMap<>());
+                    rootSpan.log("No Data found");
                 }
             }else {
                 response.put("code",valid.get("code"));
@@ -197,7 +202,10 @@ class EmployeeController implements EmployeeDAO {
             e.printStackTrace();
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
+            rootSpan.log("Data retrieval failed");
         }
+        rootSpan.setTag("get_employee_by_id_response", response.toString());
+        rootSpan.finish();
         return response;
     }
 
