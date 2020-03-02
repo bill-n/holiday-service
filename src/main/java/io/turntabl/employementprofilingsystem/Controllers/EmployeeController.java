@@ -112,11 +112,13 @@ class EmployeeController implements EmployeeDAO {
             }else {
                 response.put("code",result.get("code"));
                 response.put("msg",result.get("msg"));
+                childSpan.log("non-00 response code");
             }
         }catch (Exception e){
             e.printStackTrace();
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
+            span.log("Error has occurred");
         }
         childSpan.setTag("post_employee_response", response.toString());
         span.finish();
