@@ -215,6 +215,7 @@ class EmployeeController implements EmployeeDAO {
     @Override
     public Map<String, Object> updateEmployeeProfile(@RequestBody EditEmployee editEmployee){
         Span rootSpan = tracer.buildSpan("Update Employee Profile").start();
+        rootSpan.setTag("htt.method", "PUT");
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
         request.put("employee_id",editEmployee.getEmployee_id());
@@ -230,9 +231,10 @@ class EmployeeController implements EmployeeDAO {
                     "employee_id"
             );
             Map<String, Object> valid = parsor.validate_params(request,requiredParams);
+            rootSpan.setTag("employee_param_validation_status", valid.toString());
             if (valid.get("code").equals("00")){
                 Map<String, Object> updated_params = this.check_updated_params(editEmployee);
-                rootSpan.setTag("updated employee params", updated_params.toString());
+                rootSpan.setTag("updated_employee_params_check", updated_params.toString());
                 if (updated_params.get("code").equals("00")){
                     UpdateEmployee updateEmployee = (UpdateEmployee) updated_params.get("data");
                     int resp = jdbcTemplate.update(
@@ -273,6 +275,7 @@ class EmployeeController implements EmployeeDAO {
             rootSpan.log("Error occurred updating employee :(");
         }
         rootSpan.setTag("update_employee_profile_response", response.toString());
+        rootSpan.finish();
         return response;
     }
 
