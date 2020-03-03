@@ -165,7 +165,7 @@ public class RequestController {
     public Map<String, Object> check_employee_exits(@PathVariable("email") String email) {
         Span rootSpan = tracer.buildSpan("Checking available email").start();
         rootSpan.setTag("http_method", "GET");
-        rootSpan.setTag("email_request_id", email);
+        rootSpan.setTag("http_url", "api/v1/requester/verifymail/"+ email);
         Map<String, Object> response = new HashMap<>();
 
         response.put("response", this.jdbcTemplate.query("select * from employee where employee_email = ?",
