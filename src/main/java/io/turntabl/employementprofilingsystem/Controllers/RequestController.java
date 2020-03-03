@@ -41,7 +41,7 @@ public class RequestController {
     @ApiOperation("Make a holiday request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
-        Span span = tracer.buildSpan("Add New Holiday Request").start();
+        Span span = tracer.buildSpan("Make New Holiday Request").start();
 
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
                 request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
