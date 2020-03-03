@@ -1,5 +1,7 @@
 package io.turntabl.employementprofilingsystem.Controllers;
 
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Transfers.*;
@@ -19,12 +21,20 @@ public class AuthController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    Tracer tracer;
+
     Parsor parsor = new Parsor();
 
     @ApiOperation("Get Employee By HolidayRequestMail")
     @CrossOrigin(origins = "*")
     @GetMapping("/v1/api/login/{employee_email}")
     public Map<String,Object> getEmployeeByEmail(@PathVariable("employee_email") String email) {
+        Span rootSpan = tracer.buildSpan("Get Employee By HolidayRequestMail").start();
+        rootSpan.setTag("http_method", "GET");
+        rootSpan.setTag("request_email", email);
+        rootSpan.setTag("http_url", "/v1/api/login/" + email);
+
 
         Map<String, Object> request = new HashMap<>();
         Map<String, Object> response = new HashMap<>();
@@ -42,6 +52,7 @@ public class AuthController {
                         new Object[]{email},
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
+                rootSpan.setTag("db.statement", "select * from employee where employee_email = " + email);
                 if (!employee.isEmpty()){
                     response.put("code","00");
                     response.put("msg","Data retrieved successfully");
@@ -60,6 +71,7 @@ public class AuthController {
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
         }
+        rootSpan.finish();
         return response;
     }
 
