@@ -13,6 +13,7 @@ import io.turntabl.employementprofilingsystem.Transfers.UpdateEmployee;
 import io.turntabl.employementprofilingsystem.Utilities.Date;
 import io.turntabl.employementprofilingsystem.Utilities.Parsor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -132,7 +133,7 @@ class EmployeeController implements EmployeeDAO {
     @GetMapping("/v1/api/employees")
     @Override
     public Map<String, Object> getAllEmployee(){
-        Span span = tracer.buildSpan("getAllEmployees").start();
+        Span span = tracer.buildSpan("GET /employees").start();
         span.setTag("http.method", "GET");
 
         Map<String, Object> response = new HashMap<>();
@@ -155,6 +156,7 @@ class EmployeeController implements EmployeeDAO {
             span.log("Error retrieving employees data from Db");
         }
         span.setTag("http.response", response.toString());
+        span.setTag("http.status_code", String.valueOf(HttpStatus.OK));
         span.finish();
         return response;
     }

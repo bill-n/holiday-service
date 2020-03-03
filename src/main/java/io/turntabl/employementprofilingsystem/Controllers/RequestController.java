@@ -36,7 +36,6 @@ public class RequestController {
     public void makeARequest(@RequestBody RequestTO request) {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
                 request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
-
         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
         String startDate = DateFor.format(request.getRequest_start_date());
         String reportDate = DateFor.format(request.getRequest_report_date());
