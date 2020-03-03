@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
 
 @Api
 @RestController
@@ -44,7 +43,7 @@ class EmployeeController implements EmployeeDAO {
     @Override
     public Map<String, Object> addEmployee(@RequestBody AddEmployee requestData) {
         Span span = tracer.buildSpan("Add New Employee").start();
-        span.setTag("htt.method", "POST");
+        span.setTag("http.method", "POST");
         span.setTag("post_new_employee_request", requestData.toString());
 
         Map<String, Object> response = new HashMap<>();
