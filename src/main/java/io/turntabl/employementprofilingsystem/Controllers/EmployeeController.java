@@ -43,7 +43,7 @@ class EmployeeController implements EmployeeDAO {
     public Map<String, Object> addEmployee(@RequestBody AddEmployee requestData) {
         Span span = tracer.buildSpan("Add New Employee").start();
         span.setTag("http.method", "POST");
-        span.setTag("post_new_employee_request", requestData.toString());
+        span.setTag("http.url", "/v1/api/employee");
 
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
@@ -117,8 +117,8 @@ class EmployeeController implements EmployeeDAO {
             span.log("Something went wrong, try again later");
         }
         childSpan.setTag("post_employee_response", response.toString());
-        span.finish();
         childSpan.finish();
+        span.finish();
         return response;
     }
 
@@ -162,9 +162,12 @@ class EmployeeController implements EmployeeDAO {
     public Map<String, Object> getEmployeeById(@PathVariable("id") Integer id){
         Span rootSpan = tracer.buildSpan("Get Employee by ID").start();
         rootSpan.setTag("htt.method", "GET");
+        rootSpan.setTag("htt.url", "/v1/api/employee/{id}");
         rootSpan.setTag("employee_id", id);
+
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> request = new HashMap<>();
+        String EMPLOYEE_QUERY = "select * from employee where employee_id = ";
         request.put("id",id);
 
         try{
@@ -175,11 +178,12 @@ class EmployeeController implements EmployeeDAO {
             if (valid.get("code").equals("00")){
 
                 List<Employee> employee = jdbcTemplate.query(
-                        "select * from employee where employee_id = ?",
+                        EMPLOYEE_QUERY + "?",
                         new Object[]{id},
                         BeanPropertyRowMapper.newInstance(Employee.class)
                 );
-                rootSpan.setTag("employee_result", employee.toString());
+                rootSpan.setTag("db.instance", "employee");
+                rootSpan.setTag("db.statement", EMPLOYEE_QUERY);
 
                 if (!employee.isEmpty()){
                     response.put("code","00");
