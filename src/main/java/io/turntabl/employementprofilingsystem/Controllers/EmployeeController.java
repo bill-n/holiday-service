@@ -11,17 +11,16 @@ import io.turntabl.employementprofilingsystem.Transfers.*;
 import io.turntabl.employementprofilingsystem.Transfers.UpdateEmployee;
 
 import io.turntabl.employementprofilingsystem.Utilities.Date;
-import io.turntabl.employementprofilingsystem.Utilities.Parsor;
+import io.turntabl.employementprofilingsystem.Utilities.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 
@@ -34,7 +33,7 @@ class EmployeeController implements EmployeeDAO {
     @Autowired
     Tracer tracer;
 
-    Parsor parsor = new Parsor();
+    Parser parser = new Parser();
     Date date = new Date();
 
     @ApiOperation("Add New Employee")
@@ -58,17 +57,15 @@ class EmployeeController implements EmployeeDAO {
         request.put("employee_gender",requestData.getEmployee_gender());
         Span childSpan = null;
         try{
-
             List<String> requiredParams = Arrays.asList(
                     "employee_email",
                     "employee_role"
             );
-            Map<String, Object> result = parsor.validate_params(request,requiredParams);
-            childSpan = tracer.buildSpan("Parsor Validation Result").asChildOf(span).start();
+            Map<String, Object> result = parser.validate_params(request,requiredParams);
+            childSpan = tracer.buildSpan("Parser Validation Result").asChildOf(span).start();
             childSpan.setTag("get_post_validation_code", result.toString());
 
             if (result.get("code").equals("00")){
-
                 if (this.checkExistingEmployee(requestData.getEmployee_email())){
                     response.put("code","01");
                     response.put("msg","Employee already exist with the same email");
@@ -101,25 +98,23 @@ class EmployeeController implements EmployeeDAO {
                         response.put("code","00");
                         response.put("msg","New employee added successfully");
                         response.put("data",key.longValue());
-                        childSpan.setTag("get_post_employee_status", "New Employee Creation Succeeded :)");
+                        childSpan.setTag("get_post_employee_status", "New Employee Creation Succeeded");
 
                     }else {
                         response.put("code","01");
                         response.put("msg","Failed to add new employee, try again later");
-                        childSpan.setTag("get_post_employee_status", "New Employee Creation Failed :(");
+                        childSpan.setTag("get_post_employee_status", "New Employee Creation Failed");
                     }
-
                 }
             }else {
                 response.put("code",result.get("code"));
                 response.put("msg",result.get("msg"));
-                childSpan.log("non-00 response code");
             }
         }catch (Exception e){
             e.printStackTrace();
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
-            span.log("Error has occurred");
+            span.log("Something went wrong, try again later");
         }
         childSpan.setTag("post_employee_response", response.toString());
         span.finish();
@@ -176,7 +171,7 @@ class EmployeeController implements EmployeeDAO {
             List<String> requiredParams = Arrays.asList(
                     "id"
             );
-            Map<String, Object> valid = parsor.validate_params(request,requiredParams);
+            Map<String, Object> valid = parser.validate_params(request,requiredParams);
             if (valid.get("code").equals("00")){
 
                 List<Employee> employee = jdbcTemplate.query(
@@ -233,11 +228,11 @@ class EmployeeController implements EmployeeDAO {
             List<String> requiredParams = Arrays.asList(
                     "employee_id"
             );
-            Map<String, Object> valid = parsor.validate_params(request,requiredParams);
-            rootSpan.setTag("employee_param_validation_status", valid.toString());
+            Map<String, Object> valid = parser.validate_params(request,requiredParams);
+            rootSpan.setTag("employee_param_validation_status", String.valueOf(Optional.of(valid)));
             if (valid.get("code").equals("00")){
                 Map<String, Object> updated_params = this.check_updated_params(editEmployee);
-                rootSpan.setTag("updated_employee_params_check", updated_params.toString());
+                rootSpan.setTag("updated_employee_params_check", String.valueOf(Optional.of(updated_params)));
                 if (updated_params.get("code").equals("00")){
                     UpdateEmployee updateEmployee = (UpdateEmployee) updated_params.get("data");
                     int resp = jdbcTemplate.update(
@@ -257,11 +252,11 @@ class EmployeeController implements EmployeeDAO {
                     if (resp > 0){
                         response.put("code","00");
                         response.put("msg","Employee updated successfully");
-                        rootSpan.log("Employee updated successfully :)");
+                        rootSpan.log("Employee updated successfully");
                     }else {
                         response.put("code","01");
                         response.put("msg","Failed to update employee details");
-                        rootSpan.log("Employee update failed :(");
+                        rootSpan.log("Employee update failed");
                     }
                 }else {
                     response.put("code",updated_params.get("code"));
@@ -275,7 +270,7 @@ class EmployeeController implements EmployeeDAO {
             e.printStackTrace();
             response.put("code","02");
             response.put("msg","Something went wrong, try again later");
-            rootSpan.log("Error occurred updating employee :(");
+            rootSpan.log("Error occurred updating employee");
         }
         rootSpan.setTag("update_employee_profile_response", response.toString());
         rootSpan.finish();
