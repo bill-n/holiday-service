@@ -2,8 +2,9 @@ version: '3'
 
 services:
   holidayrequest:
-    build:
-      context: .
+#    build:
+#      context: .
+    image: billalidocker/holiday:latest
     ports:
       - "7070:7070"
     environment:
