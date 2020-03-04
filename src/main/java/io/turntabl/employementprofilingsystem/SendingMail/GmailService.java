@@ -94,4 +94,4 @@ public class GmailService {
         email.setText(bodyText, "UTF-8", "html");
         return email;
     }
-}}
+}
