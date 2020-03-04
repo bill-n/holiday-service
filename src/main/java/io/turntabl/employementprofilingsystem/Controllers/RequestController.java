@@ -87,7 +87,7 @@ public class RequestController {
 
     @CrossOrigin
     @ApiOperation("validating employee with OIDC")
-    @PostMapping("/validate")
+    @PostMapping("/api/v1/validate")
     public Map<String, Object> checkToken(@RequestHeader("access-token") String token){
         Map<String, Object> response  = new HashMap<>();
             Verifier verifier = RSAVerifier.newVerifier(Paths.get("public_key.pem"));
@@ -107,7 +107,7 @@ public class RequestController {
 
     @CrossOrigin
     @ApiOperation("Checking available email")
-    @GetMapping("/verifymail/{email}")
+    @GetMapping("/api/v1/verifymail/{email}")
     public Map<String, Object> check_employee_exits(@PathVariable("email") String email) {
         Map<String, Object> response = new HashMap<>();
 
