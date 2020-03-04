@@ -14,7 +14,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -69,7 +68,6 @@ public class RequestController {
     public List<RequestTO> getAllRequests() {
         return this.jdbcTemplate.query("select request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id",
                 new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
-
         );
     }
 
@@ -96,8 +94,6 @@ public class RequestController {
 
         try {
         System.out.println("My path::" + Paths.get("public_key.pem"));
-
-            // Verify and decode the encoded string JWT to a rich object
             JWT jwt = JWT.getDecoder().decode(token,verifier);
             response.put("success", true);
             response.put("decoded_token", jwt);
@@ -121,7 +117,6 @@ public class RequestController {
         ) );
         return response;
     }
-
 
     @CrossOrigin
     @ApiOperation("Checking available email")
