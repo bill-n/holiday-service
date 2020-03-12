@@ -1,6 +1,5 @@
 package io.turntabl.employementprofilingsystem.SendingMail;
 
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -23,7 +22,7 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Properties;
 
-public class GmailService {
+    public class GmailService {
     private static final String APPLICATION_NAME = "GmailService";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
