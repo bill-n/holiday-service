@@ -28,8 +28,8 @@ public class RequestController {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-
-    @CrossOrigin
+    
+    @CrossOrigin(origins = "*")
     @ApiOperation("Make a holiday request")
     @PostMapping("/api/v1/request")
     public void makeARequest(@RequestBody RequestTO request) {
@@ -49,7 +49,7 @@ public class RequestController {
         }
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("Get all holiday requests for requester")
     @GetMapping("/api/v1/request/requester/{id}")
 
@@ -61,7 +61,7 @@ public class RequestController {
         );
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("Get all holiday requests")
     @GetMapping("/api/v1/requests")
 
@@ -71,21 +71,21 @@ public class RequestController {
         );
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("Accept holiday request")
     @PutMapping("/api/v1/requests/approve/{id}")
     public void approveRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 3 where request_status_id = 1 and request_id = ?", request_id);
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("Decline holiday request")
     @PutMapping("/api/v1/requests/decline/{id}")
     public void declineRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 2 where request_status_id = 1 and request_id = ?", request_id);
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("validating employee with OIDC")
     @PostMapping("/api/v1/validate")
     public Map<String, Object> checkToken(@RequestHeader("access-token") String token){
@@ -105,7 +105,7 @@ public class RequestController {
         }
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("Checking available email")
     @GetMapping("/api/v1/verifymail/{email}")
     public Map<String, Object> check_employee_exits(@PathVariable("email") String email) {
@@ -118,7 +118,7 @@ public class RequestController {
         return response;
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     @ApiOperation("Checking available email")
     @PostMapping("api/v1/addemployee")
     public Map<String, Object> addemployeeDetails(@RequestBody Employee employeeDetails) {
