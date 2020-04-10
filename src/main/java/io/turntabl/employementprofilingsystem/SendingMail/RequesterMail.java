@@ -2,7 +2,7 @@ package io.turntabl.employementprofilingsystem.SendingMail;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-public class RequestMail{
+public class RequesterMail {
     public static void requestMessage(String to, String from, String subject, String requester_start_date, String requester_end_date, String requester_name) throws IOException, GeneralSecurityException {
         String bodyText = "<!doctype html>\n" +
                 "  <html>\n" +
