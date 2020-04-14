@@ -14,8 +14,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -90,10 +90,10 @@ public class RequestController {
     @PostMapping("/api/v1/validate")
     public Map<String, Object> checkToken(@RequestHeader("access-token") String token){
         Map<String, Object> response  = new HashMap<>();
-            Verifier verifier = RSAVerifier.newVerifier(Paths.get("public_key.pem"));
+            Verifier verifier = RSAVerifier.newVerifier(System.getenv("public_key.pem"));
 
         try {
-        System.out.println("My path::" + Paths.get("public_key.pem"));
+        System.out.println("My path::" + System.getenv("public_key.pem"));
             JWT jwt = JWT.getDecoder().decode(token,verifier);
             response.put("success", true);
             response.put("decoded_token", jwt);
