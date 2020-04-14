@@ -90,10 +90,10 @@ public class RequestController {
     @PostMapping("/api/v1/validate")
     public Map<String, Object> checkToken(@RequestHeader("access-token") String token){
         Map<String, Object> response  = new HashMap<>();
-            Verifier verifier = RSAVerifier.newVerifier(System.getenv("public_key.pem"));
+            Verifier verifier = RSAVerifier.newVerifier(System.getenv("PUBLIC_KEY.pem"));
 
         try {
-        System.out.println("My path::" + System.getenv("public_key.pem"));
+        System.out.println("My path::" + System.getenv("PUBLIC_KEY.pem"));
             JWT jwt = JWT.getDecoder().decode(token,verifier);
             response.put("success", true);
             response.put("decoded_token", jwt);
