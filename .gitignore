@@ -20,9 +20,8 @@ build/
 *.iml
 *.ipr
 ./public_key.pem
-./credentials.json
 credentials.json
-public_key.pem
+
 out/
 
 ### NetBeans ###
