@@ -7,13 +7,14 @@ import io.fusionauth.jwt.rsa.RSAVerifier;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.turntabl.employementprofilingsystem.Models.RequestTO;
-import io.turntabl.employementprofilingsystem.SendingMail.RequestMail;
+import io.turntabl.employementprofilingsystem.SendingMail.ApproverMail;
 import io.turntabl.employementprofilingsystem.Transfers.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+@CrossOrigin(origins = "*")
 @Api
 @RestController
 public class RequestController {
@@ -41,7 +44,8 @@ public class RequestController {
          String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            RequestMail.requestMessage("ali.fuseini@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+            ApproverMail.requestMessage("ali.fuseini@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
