@@ -45,6 +45,7 @@ public class RequestController {
 
         try {
             ApproverMail.requestMessage("ali.fuseini@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
