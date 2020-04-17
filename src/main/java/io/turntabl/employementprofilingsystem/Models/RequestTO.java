@@ -83,10 +83,6 @@ public class RequestTO {
         return requester_name;
     }
 
-    public void setRequester_email(String requester_email) {
-        this.requester_name = requester_name;
-    }
-
     public String getReq_status() {
         return req_status;
     }
