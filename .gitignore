@@ -23,7 +23,7 @@ build/
 ./credentials.json
 out/
 
-
+out/
 
 ### NetBeans ###
 /nbproject/private/

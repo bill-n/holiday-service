@@ -3,7 +3,7 @@ package io.turntabl.employementprofilingsystem.SendingMail;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-public class HolidayRequestMail {
+public class RequesterMail {
     public static void requestMessage(String to, String from, String subject, String request_start_date, String request_report_date, String requester_name) throws IOException, GeneralSecurityException {
         String bodyText = "<!doctype html>\n" +
                 "  <html>\n" +
