@@ -19,8 +19,8 @@ build/
 *.iws
 *.iml
 *.ipr
-./public_key.pem
-./credentials.json
+public_key.pem
+credentials.json
 out/
 
 out/
