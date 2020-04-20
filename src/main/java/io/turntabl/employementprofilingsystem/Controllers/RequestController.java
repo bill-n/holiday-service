@@ -78,8 +78,22 @@ public class RequestController {
     @CrossOrigin(origins = "*")
     @ApiOperation("Accept holiday request")
     @PutMapping("/api/v1/requests/approve/{id}")
-    public void approveRequest(@PathVariable("id") Integer request_id) {
+    public void approveRequest(@PathVariable("id") Integer request_id) throws IOException, GeneralSecurityException {
         this.jdbcTemplate.update("update requests set request_status_id = 3 where request_status_id = 1 and request_id = ?", request_id);
+
+
+    List<RequestTO> user_details = this.jdbcTemplate.query(
+                 "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
+                new Object[]{request_id},
+                new BeanPropertyRowMapper<>(RequestTO.class));
+
+        SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+         String startDate = DateFor.format(user_details.get(0).getRequest_start_date());
+         String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
+
+
+           ApproverMail.approveMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io" ,"Holiday request response", startDate, reportDate);
+
     }
 
     @CrossOrigin(origins = "*")
