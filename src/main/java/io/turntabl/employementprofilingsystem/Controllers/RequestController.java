@@ -101,6 +101,24 @@ public class RequestController {
     @PutMapping("/api/v1/requests/decline/{id}")
     public void declineRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 2 where request_status_id = 1 and request_id = ?", request_id);
+
+         List<RequestTO> user_details = this.jdbcTemplate.query(
+                 "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
+                new Object[]{request_id},
+                new BeanPropertyRowMapper<>(RequestTO.class));
+
+        SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+         String startDate = DateFor.format(user_details.get(0).getRequest_start_date());
+         String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
+
+
+        try {
+            ApproverMail.declinedMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io" ,"Holiday request response", startDate, reportDate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     @CrossOrigin(origins = "*")

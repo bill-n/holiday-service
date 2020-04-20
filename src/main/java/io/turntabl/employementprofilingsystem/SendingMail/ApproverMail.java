@@ -296,7 +296,7 @@ public class ApproverMail {
         GmailService.sendMail(from, to, subject, bodyText.toString());
     }
 
-        public static void declinedMessage(String to, String from, String subject, String requester_start_date, String requester_end_date,String requester_name) throws IOException, GeneralSecurityException {
+        public static void declinedMessage(String to, String from, String subject, String requester_start_date, String requester_end_date) throws IOException, GeneralSecurityException {
         String bodyText = "<!doctype html>\n" +
                 "  <html>\n" +
                 "    <head>\n" +
