@@ -27,7 +27,7 @@ import java.util.Properties;
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     private static final List<String> SCOPES = ImmutableList.of(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_COMPOSE);
-    private static final String CREDENTIALS_FILE_PATH = "credentials.json";
+    private static final String CREDENTIALS_FILE_PATH = System.getenv("credentials.json");
 
     public static void sendMail(String from, String to, String subject, String bodyText) throws IOException, GeneralSecurityException {
         Gmail service = getGmail(from);

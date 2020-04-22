@@ -127,7 +127,7 @@ public class RequestController {
     @PostMapping("/api/v1/validate")
     public Map<String, Object> checkToken(@RequestHeader("access-token") String token){
         Map<String, Object> response  = new HashMap<>();
-            Verifier verifier = RSAVerifier.newVerifier(Paths.get("public_key.pem"));
+            Verifier verifier = RSAVerifier.newVerifier(Paths.get(System.getenv("public_key.pem")));
 
         try {
         System.out.println("My path::" + Paths.get("public_key.pem"));
