@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class ApproverMail {
-    public static void requestMessage(String to, String from, String subject, String requester_start_date, String requester_end_date,String requester_name) throws IOException, GeneralSecurityException {
+    public static void requestMessage(String to, String from, String subject, String requester_start_date, String requester_end_date,String requester_email) throws IOException, GeneralSecurityException {
         String bodyText = "<!doctype html>\n" +
                 "  <html>\n" +
                 "    <head>\n" +
