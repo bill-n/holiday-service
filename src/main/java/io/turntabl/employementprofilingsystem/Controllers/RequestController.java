@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -31,7 +32,7 @@ public class RequestController {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-    
+
     @CrossOrigin(origins = "*")
     @ApiOperation("Make a holiday request")
     @PostMapping("/api/v1/request")
@@ -39,12 +40,12 @@ public class RequestController {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
                 request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
 
-         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-         String startDate = DateFor.format(request.getRequest_start_date());
-         String reportDate = DateFor.format(request.getRequest_report_date());
+        SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
+        String startDate = DateFor.format(request.getRequest_start_date());
+        String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            ApproverMail.requestMessage("ali.fuseini@turntabl.io", request.getFrom() ,"Holiday request", startDate, reportDate, request.getRequester_name());
+            ApproverMail.requestMessage("ali.fuseini@turntabl.io", request.getFrom(), "Holiday request", startDate, reportDate, request.getRequester_name());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,17 +84,17 @@ public class RequestController {
         this.jdbcTemplate.update("update requests set request_status_id = 3 where request_id = ?", request_id);
 
 
-    List<RequestTO> user_details = this.jdbcTemplate.query(
-                 "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
+        List<RequestTO> user_details = this.jdbcTemplate.query(
+                "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
                 new Object[]{request_id},
                 new BeanPropertyRowMapper<>(RequestTO.class));
 
         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-         String startDate = DateFor.format(user_details.get(0).getRequest_start_date());
-         String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
+        String startDate = DateFor.format(user_details.get(0).getRequest_start_date());
+        String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
 
 
-           ApproverMail.approveMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io" ,"Holiday request response", startDate, reportDate);
+        ApproverMail.approveMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io", "Holiday request response", startDate, reportDate);
 
     }
 
@@ -103,18 +104,18 @@ public class RequestController {
     public void declineRequest(@PathVariable("id") Integer request_id) {
         this.jdbcTemplate.update("update requests set request_status_id = 2 where request_id = ?", request_id);
 
-         List<RequestTO> user_details = this.jdbcTemplate.query(
-                 "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
+        List<RequestTO> user_details = this.jdbcTemplate.query(
+                "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
                 new Object[]{request_id},
                 new BeanPropertyRowMapper<>(RequestTO.class));
 
         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
-         String startDate = DateFor.format(user_details.get(0).getRequest_start_date());
-         String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
+        String startDate = DateFor.format(user_details.get(0).getRequest_start_date());
+        String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
 
 
         try {
-            ApproverMail.declinedMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io" ,"Holiday request response", startDate, reportDate);
+            ApproverMail.declinedMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io", "Holiday request response", startDate, reportDate);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
@@ -125,13 +126,14 @@ public class RequestController {
     @CrossOrigin(origins = "*")
     @ApiOperation("validating employee with OIDC")
     @PostMapping("/api/v1/validate")
-    public Map<String, Object> checkToken(@RequestHeader("access-token") String token){
-        Map<String, Object> response  = new HashMap<>();
-            Verifier verifier = RSAVerifier.newVerifier(Paths.get(System.getenv("public_key.pem")));
+    public Map<String, Object> checkToken(@RequestHeader("access-token") String token) {
+        Map<String, Object> response = new HashMap<>();
+        public_key();
+        Verifier verifier = RSAVerifier.newVerifier(Paths.get("public_key.pem"));
 
         try {
-        System.out.println("My path::" + Paths.get("public_key.pem"));
-            JWT jwt = JWT.getDecoder().decode(token,verifier);
+            System.out.println("My path::" + Paths.get("public_key.pem"));
+            JWT jwt = JWT.getDecoder().decode(token, verifier);
             response.put("success", true);
             response.put("decoded_token", jwt);
             return response;
@@ -141,6 +143,20 @@ public class RequestController {
             return response;
         }
     }
+
+    public static void public_key() {
+        try {
+            FileWriter pub_key = new FileWriter("public_key.pem");
+            pub_key.write(System.getenv("PUBLIC_KEY"));
+            pub_key.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+
 
     @CrossOrigin(origins = "*")
     @ApiOperation("Checking available email")
