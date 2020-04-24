@@ -40,19 +40,16 @@ public class RequestController {
     public void makeARequest(@RequestBody RequestTO request) {
         jdbcTemplate.update("insert into requests(requester_id, request_start_date, request_report_date) values(?,?,?)",
                 request.getRequester_id(), request.getRequest_start_date(), request.getRequest_report_date());
-
-          List<RequestTO> user_details = this.jdbcTemplate.query(
+  List<RequestTO> user_details = this.jdbcTemplate.query(
                 "select employee.employee_email as requester_email, requests.request_start_date, requests.request_report_date from employee inner join requests on employee.employee_id =requests.requester_id where requests.request_id =?",
-
+                new Object[]{request},
                 new BeanPropertyRowMapper<>(RequestTO.class));
-
-
         SimpleDateFormat DateFor = new SimpleDateFormat("E, dd MMMM yyyy");
         String startDate = DateFor.format(request.getRequest_start_date());
         String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            RequesterMail.requestMessage("ali.fuseini@turntabl.io","user_details.get(0).getRequester_email()", "Holiday request", startDate, reportDate, request.getRequester_email());
+            RequesterMail.requestMessage("ali.fuseini@turntabl.io", user_details.get(0).getRequester_email(), "Holiday request", startDate, reportDate, request.getRequester_email());
 
         } catch (IOException e) {
             e.printStackTrace();
