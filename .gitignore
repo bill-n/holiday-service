@@ -13,8 +13,7 @@ build/
 .settings
 .springBeans
 .sts4-cache
-./public_key.pem
-./credentials.json
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
