@@ -250,8 +250,8 @@ public class ApproverMail {
                 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;\">\n" +
                 "            <tr>\n" +
                 "              <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top;\">\n" +
-                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Hi there, your request was approved </p>\n" +
-                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Holiday request by " + from + "</p>\n" +
+                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Hi there, your request was approved. Enjoy your holidays!!!</p>\n" +
+//                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Holiday request by " + from + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Start date: " + requester_start_date + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Report date: " + requester_end_date + "</p>\n" +
                 "              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"btn btn-primary\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;\">\n" +
@@ -396,8 +396,8 @@ public class ApproverMail {
                 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;\">\n" +
                 "            <tr>\n" +
                 "              <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top;\">\n" +
-                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Hi there, your holiday request was declined </p>\n" +
-                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Holiday request by " + from + "</p>\n" +
+                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Hi there, Sorry your holiday request was declined. </p>\n" +
+//                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Holiday request by " + from + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Start date: " + requester_start_date + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Report date: " + requester_end_date + "</p>\n" +
                 "              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"btn btn-primary\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;\">\n" +
