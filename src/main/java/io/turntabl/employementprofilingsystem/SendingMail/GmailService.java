@@ -37,9 +37,11 @@ import java.util.Properties;
             System.out.println(service.users().toString());
             credentials();
             try {
+                System.out.println("From requester " +from+ "to approver"+ to);
                 service.users().messages().send(from,
                         createMessageWithEmail(createEmail(to, from, subject, bodyText))
                 ).execute();
+                  System.out.println("sent succesfully");
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
