@@ -7,18 +7,17 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 
 public class ApproverMail {
-    private static final String CREDENTIALS_FILE_PATH = "bodyText.txt";
     public static void requestMessage(String to, String from, String subject, String requester_start_date, String requester_end_date) throws IOException, GeneralSecurityException {
       body();
 
-        Path htmlbody = Paths.get("htmlText.txt");
+        Path htmlbody = Paths.get("htmlText.text");
 
         GmailService.sendMail(from, to, subject, htmlbody.toString());
     }
 
      public static void body(){
             try {
-                FileWriter bodyWrite = new FileWriter("htmlText.txt");
+                FileWriter bodyWrite = new FileWriter("htmlText.text");
                 bodyWrite.write(System.getenv("BODYTEXT"));
                 bodyWrite.close();
             } catch (IOException e) {
