@@ -92,7 +92,7 @@ public class RequestController {
         String reportDate = DateFor.format(user_details.get(0).getRequest_report_date());
 
 
-        ApproverMail.approveMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io", "Holiday request response", startDate, reportDate);
+        ApproverMail.approveMessage(user_details.get(0).getRequester_email(), System.getenv("APPROVER_EMAIL"), "Holiday Request Response", startDate, reportDate);
 
     }
 
@@ -113,7 +113,7 @@ public class RequestController {
 
 
         try {
-            ApproverMail.declinedMessage(user_details.get(0).getRequester_email(), "ali.fuseini@turntabl.io", "Holiday request response", startDate, reportDate);
+            ApproverMail.declinedMessage(user_details.get(0).getRequester_email(), System.getenv("APPROVER_EMAIL"), "Holiday request response", startDate, reportDate);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
@@ -130,7 +130,6 @@ public class RequestController {
         Verifier verifier = RSAVerifier.newVerifier(Paths.get("public_key.pem"));
 
         try {
-            System.out.println("My path::" + Paths.get("public_key.pem"));
             JWT jwt = JWT.getDecoder().decode(token, verifier);
             response.put("success", true);
             response.put("decoded_token", jwt);
