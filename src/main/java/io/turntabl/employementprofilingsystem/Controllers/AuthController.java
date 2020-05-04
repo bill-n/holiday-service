@@ -72,5 +72,4 @@ public class AuthController {
         rootSpan.finish();
         return response;
     }
-
 }

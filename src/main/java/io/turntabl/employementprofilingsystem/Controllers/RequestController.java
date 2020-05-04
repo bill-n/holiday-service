@@ -45,8 +45,7 @@ public class RequestController {
         String reportDate = DateFor.format(request.getRequest_report_date());
 
         try {
-            ApproverMail.requestMessage("ali.fuseini@turntabl.io",request.getFrom(), "Holiday request", startDate, reportDate, request.getRequester_name());
-            System.out.println("requester email "+request.getFrom());
+            ApproverMail.requestMessage(System.getenv("APPROVER_EMAIL"),request.getFrom(), "Holiday request", startDate, reportDate);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
@@ -71,8 +70,7 @@ public class RequestController {
     @GetMapping("/api/v1/requests")
 
     public List<RequestTO> getAllRequests() {
-        return this.jdbcTemplate.query("select request_id, employee_email as requester_email, request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id inner join employee on requests.requester_id =employee.employee_id order by req_status desc;"
-                ,
+        return this.jdbcTemplate.query("select request_id, employee_email as requester_email, request_start_date, request_report_date, request_status.req_status from requests inner join request_status on requests.request_status_id = request_status.request_status_id inner join employee on requests.requester_id =employee.employee_id order by req_status desc;",
                 new BeanPropertyRowMapper<RequestTO>(RequestTO.class)
         );
     }
@@ -149,9 +147,7 @@ public class RequestController {
             FileWriter pub_key = new FileWriter("public_key.pem");
             pub_key.write(System.getenv("PUBLIC_KEY"));
             pub_key.close();
-            System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -167,7 +163,7 @@ public class RequestController {
         response.put("response", this.jdbcTemplate.query("select * from employee where employee_email = ?",
                 new Object[]{email},
                 BeanPropertyRowMapper.newInstance(Employee.class)
-        ) );
+        ));
         return response;
     }
 

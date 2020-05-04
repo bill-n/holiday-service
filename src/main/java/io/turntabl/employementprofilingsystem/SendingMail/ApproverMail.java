@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class ApproverMail {
-    public static void requestMessage(String to, String from, String subject, String requester_start_date, String requester_end_date,String requester_name) throws IOException, GeneralSecurityException {
+    public static void requestMessage(String to, String from, String subject, String requester_start_date, String requester_end_date) throws IOException, GeneralSecurityException {
         String bodyText = "<!doctype html>\n" +
                 "  <html>\n" +
                 "    <head>\n" +
@@ -251,7 +251,6 @@ public class ApproverMail {
                 "            <tr>\n" +
                 "              <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top;\">\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Hi there, your request was approved. Enjoy your holidays!!!</p>\n" +
-//                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Holiday request by " + from + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Start date: " + requester_start_date + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Report date: " + requester_end_date + "</p>\n" +
                 "              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"btn btn-primary\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;\">\n" +
@@ -261,7 +260,6 @@ public class ApproverMail {
                 "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;\">\n" +
                 "                    <tbody>\n" +
                 "                      <tr>\n" +
-//                "                      <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;\"> <a href = \"https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=https://holiday-request.herokuapp.com/approver&response_type=code&client_id=859455735473-bgmqqco3q588kgaog0g2k0fmnur5qvf9.apps.googleusercontent.com&hd=turntabl.io&prompt=consent\" target=\"_blank\" style=\"display: inline-block; color: #ffffff; background-color: green; border: solid 1px green; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: green;\"> Take Action </a> </td>\n" +
                 "                    </tr>\n" +
                 "                    </tbody>\n" +
                 "                  </table>\n" +
@@ -397,7 +395,6 @@ public class ApproverMail {
                 "            <tr>\n" +
                 "              <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top;\">\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Hi there, Sorry your holiday request was declined. </p>\n" +
-//                "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Holiday request by " + from + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Start date: " + requester_start_date + "</p>\n" +
                 "              <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: black;\">Report date: " + requester_end_date + "</p>\n" +
                 "              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"btn btn-primary\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;\">\n" +
@@ -407,7 +404,6 @@ public class ApproverMail {
                 "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;\">\n" +
                 "                    <tbody>\n" +
                 "                      <tr>\n" +
-//                "                      <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;\"> <a href = \"https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=https://holiday-request.herokuapp.com/approver&response_type=code&client_id=859455735473-bgmqqco3q588kgaog0g2k0fmnur5qvf9.apps.googleusercontent.com&hd=turntabl.io&prompt=consent\" target=\"_blank\" style=\"display: inline-block; color: #ffffff; background-color: green; border: solid 1px green; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: green;\"> Take Action </a> </td>\n" +
                 "                    </tr>\n" +
                 "                    </tbody>\n" +
                 "                  </table>\n" +

@@ -37,11 +37,9 @@ import java.util.Properties;
             System.out.println(service.users().toString());
             credentials();
             try {
-                System.out.println("From requester " +from+ "to approver"+ to);
                 service.users().messages().send(from,
                         createMessageWithEmail(createEmail(to, from, subject, bodyText))
                 ).execute();
-                  System.out.println("sent succesfully");
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
@@ -102,7 +100,6 @@ import java.util.Properties;
                 FileWriter credentialWrite = new FileWriter("credentials.json");
                 credentialWrite.write(System.getenv("CREDENTIALS"));
                 credentialWrite.close();
-                System.out.println("Successfully wrote to the file.");
             } catch (IOException e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
